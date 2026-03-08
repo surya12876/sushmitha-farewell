@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@layer base{
+  input{
+    @apply border border-gray-500 rounded-lg p-2 w-50 focus:ring-2 focus:ring-blue-500 outline-none focus-within:shadow-lg ;
+  }
+}
+@layer components{
+  .header{
+    @apply flex items-center justify-center p-4 bg-gray-800 text-4xl text-amber-200;
+  }
+  .button-primary{
+    @apply bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-300;
+  }
+}
+@layer utilities{
+  .container{
+    @apply max-w-4xl mx-auto p-4 flex flex-col  items-center justify-center  gap-4 border border-blue-500 shadow-2xl h-40 mt-10 w-100 rounded-lg ;
+  }
+}
