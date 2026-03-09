@@ -13,15 +13,7 @@ function App() {
 
   return (
     <>
-      {/* <h1 className='header'>Text Generator Using AI</h1>
-      <div>
-        welcome to text generator using AI
-      </div>
-      <div className='container'>
-       
-      <input type="text " placeholder='enter your text here' value={textinput} onChange={(e) => setinput(e.target.value)} />
-      <button className='button-primary'>Generate text</button>
-      </div> */}
+     
       <FarewellApp/>
     </>
   )

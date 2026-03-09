@@ -18,6 +18,8 @@ const PHOTOS = [
   { id: 6, url: "https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?w=800&q=80", caption: "The Gang's All Here 💛", tag: "Best Days" },
 ];
 
+// ── Shared background effects ──────────────────────────────────────────────
+
 function FloatingParticles() {
   const particles = Array.from({ length: 28 }, (_, i) => ({
     id: i,
@@ -69,11 +71,41 @@ function Confetti({ active }) {
   return <>{pieces.map((p) => <ConfettiPiece key={p.id} {...p} />)}</>;
 }
 
-function PhotoCarousel() {
+// ── Back button ────────────────────────────────────────────────────────────
+
+function BackButton({ onBack }) {
+  return (
+    <button
+      onClick={onBack}
+      style={{
+        position: "fixed", top: "24px", left: "24px", zIndex: 100,
+        display: "flex", alignItems: "center", gap: "8px",
+        padding: "10px 20px", borderRadius: "999px",
+        background: "rgba(255,255,255,0.08)",
+        border: "1px solid rgba(255,255,255,0.18)",
+        color: "#fff", fontSize: "14px", fontWeight: 600,
+        fontFamily: "'Lato', sans-serif", cursor: "pointer",
+        backdropFilter: "blur(12px)",
+        transition: "background 0.2s, transform 0.2s",
+      }}
+      onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.15)"; e.currentTarget.style.transform = "translateX(-2px)"; }}
+      onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.transform = "translateX(0)"; }}
+    >
+      ← Back
+    </button>
+  );
+}
+
+// ── PAGE: Memories ─────────────────────────────────────────────────────────
+
+function MemoriesPage({ onBack }) {
   const [current, setCurrent] = useState(0);
   const [animDir, setAnimDir] = useState(null);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [visible, setVisible] = useState(false);
   const timerRef = useRef(null);
+
+  useEffect(() => { setTimeout(() => setVisible(true), 50); }, []);
 
   const goTo = (idx, dir) => {
     if (isAnimating) return;
@@ -95,58 +127,94 @@ function PhotoCarousel() {
   const nextIdx = (current + 1) % PHOTOS.length;
 
   return (
-    <div style={{ padding: "80px 24px", maxWidth: "900px", margin: "0 auto", textAlign: "center" }}>
-      <p style={{ fontSize: "12px", letterSpacing: "4px", color: "#60a5fa", textTransform: "uppercase", marginBottom: "16px" }}>
+    <div style={{
+      minHeight: "100vh", display: "flex", flexDirection: "column",
+      alignItems: "center", justifyContent: "center",
+      padding: "60px 24px 24px", position: "relative", zIndex: 1,
+      opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(24px)",
+      transition: "opacity 0.5s ease, transform 0.5s ease",
+    }}>
+      <BackButton onBack={onBack} />
+
+      <p style={{ fontSize: "11px", letterSpacing: "4px", color: "#60a5fa", textTransform: "uppercase", marginBottom: "8px" }}>
         📸 Moments We'll Cherish
       </p>
-      <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 700, marginBottom: "48px", color: "#fff" }}>
+      <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(24px, 3.5vw, 38px)", fontWeight: 700, marginBottom: "20px", color: "#fff", textAlign: "center" }}>
         Our <span style={{ color: "#60a5fa", fontStyle: "italic" }}>Memories</span> Together
       </h2>
-      <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center", gap: "20px" }}>
-        <div onClick={prev} style={{ width: "80px", height: "110px", borderRadius: "12px", overflow: "hidden", cursor: "pointer", flexShrink: 0, opacity: 0.4, transition: "opacity 0.3s, transform 0.3s", transform: "scale(0.92)" }}
-          onMouseEnter={e => { e.currentTarget.style.opacity = "0.7"; e.currentTarget.style.transform = "scale(0.96)"; }}
-          onMouseLeave={e => { e.currentTarget.style.opacity = "0.4"; e.currentTarget.style.transform = "scale(0.92)"; }}>
-          <img src={PHOTOS[prevIdx].url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-        </div>
-        <div style={{ flex: 1, maxWidth: "640px", position: "relative", borderRadius: "24px", overflow: "hidden", boxShadow: "0 30px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08)" }}>
-          <div style={{ transition: "opacity 0.38s ease, transform 0.38s ease", opacity: isAnimating ? 0 : 1, transform: isAnimating ? `translateX(${animDir === "right" ? "-40px" : "40px"})` : "translateX(0)" }}>
-            <img src={photo.url} alt={photo.caption} style={{ width: "100%", height: "380px", objectFit: "cover", display: "block" }} />
-            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%)" }} />
-            <div style={{ position: "absolute", top: "20px", left: "20px", background: "rgba(96,165,250,0.25)", border: "1px solid rgba(96,165,250,0.5)", color: "#60a5fa", padding: "4px 14px", borderRadius: "999px", fontSize: "11px", fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", backdropFilter: "blur(8px)" }}>
-              {photo.tag}
-            </div>
-            <div style={{ position: "absolute", bottom: "24px", left: "24px", right: "24px", textAlign: "left" }}>
-              <p style={{ color: "#fff", fontSize: "18px", fontWeight: 700, fontFamily: "'Playfair Display', serif", textShadow: "0 2px 8px rgba(0,0,0,0.5)" }}>{photo.caption}</p>
+
+      <div style={{ width: "100%", maxWidth: "860px" }}>
+        <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center", gap: "14px" }}>
+          {/* Prev thumbnail */}
+          <div onClick={prev} style={{ width: "60px", height: "80px", borderRadius: "10px", overflow: "hidden", cursor: "pointer", flexShrink: 0, opacity: 0.4, transition: "opacity 0.3s, transform 0.3s", transform: "scale(0.92)" }}
+            onMouseEnter={e => { e.currentTarget.style.opacity = "0.7"; e.currentTarget.style.transform = "scale(0.96)"; }}
+            onMouseLeave={e => { e.currentTarget.style.opacity = "0.4"; e.currentTarget.style.transform = "scale(0.92)"; }}>
+            <img src={PHOTOS[prevIdx].url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          </div>
+
+          {/* Main slide */}
+          <div style={{ flex: 1, maxWidth: "640px", position: "relative", borderRadius: "18px", overflow: "hidden", boxShadow: "0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08)" }}>
+            <div style={{ transition: "opacity 0.38s ease, transform 0.38s ease", opacity: isAnimating ? 0 : 1, transform: isAnimating ? `translateX(${animDir === "right" ? "-40px" : "40px"})` : "translateX(0)" }}>
+              <img src={photo.url} alt={photo.caption} style={{ width: "100%", height: "300px", objectFit: "cover", display: "block" }} />
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%)" }} />
+              <div style={{ position: "absolute", top: "20px", left: "20px", background: "rgba(96,165,250,0.25)", border: "1px solid rgba(96,165,250,0.5)", color: "#60a5fa", padding: "4px 14px", borderRadius: "999px", fontSize: "11px", fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", backdropFilter: "blur(8px)" }}>
+                {photo.tag}
+              </div>
+              <div style={{ position: "absolute", bottom: "24px", left: "24px", right: "24px", textAlign: "left" }}>
+                <p style={{ color: "#fff", fontSize: "20px", fontWeight: 700, fontFamily: "'Playfair Display', serif", textShadow: "0 2px 8px rgba(0,0,0,0.5)" }}>{photo.caption}</p>
+              </div>
             </div>
           </div>
+
+          {/* Next thumbnail */}
+          <div onClick={next} style={{ width: "60px", height: "80px", borderRadius: "10px", overflow: "hidden", cursor: "pointer", flexShrink: 0, opacity: 0.4, transition: "opacity 0.3s, transform 0.3s", transform: "scale(0.92)" }}
+            onMouseEnter={e => { e.currentTarget.style.opacity = "0.7"; e.currentTarget.style.transform = "scale(0.96)"; }}
+            onMouseLeave={e => { e.currentTarget.style.opacity = "0.4"; e.currentTarget.style.transform = "scale(0.92)"; }}>
+            <img src={PHOTOS[nextIdx].url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          </div>
         </div>
-        <div onClick={next} style={{ width: "80px", height: "110px", borderRadius: "12px", overflow: "hidden", cursor: "pointer", flexShrink: 0, opacity: 0.4, transition: "opacity 0.3s, transform 0.3s", transform: "scale(0.92)" }}
-          onMouseEnter={e => { e.currentTarget.style.opacity = "0.7"; e.currentTarget.style.transform = "scale(0.96)"; }}
-          onMouseLeave={e => { e.currentTarget.style.opacity = "0.4"; e.currentTarget.style.transform = "scale(0.92)"; }}>
-          <img src={PHOTOS[nextIdx].url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+
+        {/* Controls */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", marginTop: "14px" }}>
+          <button onClick={prev} style={{ width: "44px", height: "44px", borderRadius: "50%", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", fontSize: "18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s" }}
+            onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.15)"}
+            onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.07)"}>←</button>
+          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+            {PHOTOS.map((_, i) => (
+              <button key={i} onClick={() => goTo(i, i > current ? "right" : "left")} style={{ width: i === current ? "24px" : "8px", height: "8px", borderRadius: "999px", background: i === current ? "#60a5fa" : "rgba(255,255,255,0.25)", border: "none", cursor: "pointer", padding: 0, transition: "all 0.3s ease" }} />
+            ))}
+          </div>
+          <button onClick={next} style={{ width: "44px", height: "44px", borderRadius: "50%", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", fontSize: "18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s" }}
+            onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.15)"}
+            onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.07)"}>→</button>
         </div>
+        <p style={{ marginTop: "8px", color: "rgba(255,255,255,0.3)", fontSize: "12px", letterSpacing: "1px", textAlign: "center" }}>{current + 1} / {PHOTOS.length}</p>
       </div>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "16px", marginTop: "28px" }}>
-        <button onClick={prev} style={{ width: "44px", height: "44px", borderRadius: "50%", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", fontSize: "18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s" }}
-          onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.15)"}
-          onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.07)"}>←</button>
-        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-          {PHOTOS.map((_, i) => (
-            <button key={i} onClick={() => goTo(i, i > current ? "right" : "left")} style={{ width: i === current ? "24px" : "8px", height: "8px", borderRadius: "999px", background: i === current ? "#60a5fa" : "rgba(255,255,255,0.25)", border: "none", cursor: "pointer", padding: 0, transition: "all 0.3s ease" }} />
-          ))}
-        </div>
-        <button onClick={next} style={{ width: "44px", height: "44px", borderRadius: "50%", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", fontSize: "18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s" }}
-          onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.15)"}
-          onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.07)"}>→</button>
+
+      {/* Thumbnail strip */}
+      <div style={{ display: "flex", gap: "8px", marginTop: "16px", flexWrap: "wrap", justifyContent: "center", maxWidth: "680px" }}>
+        {PHOTOS.map((p, i) => (
+          <div key={p.id} onClick={() => goTo(i, i > current ? "right" : "left")} style={{
+            width: "72px", height: "50px", borderRadius: "8px", overflow: "hidden", cursor: "pointer",
+            border: `2px solid ${i === current ? "#60a5fa" : "transparent"}`,
+            opacity: i === current ? 1 : 0.5, transition: "all 0.25s ease",
+            flexShrink: 0,
+          }}
+            onMouseEnter={e => { if (i !== current) e.currentTarget.style.opacity = "0.8"; }}
+            onMouseLeave={e => { if (i !== current) e.currentTarget.style.opacity = "0.5"; }}>
+            <img src={p.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          </div>
+        ))}
       </div>
-      <p style={{ marginTop: "12px", color: "rgba(255,255,255,0.3)", fontSize: "13px", letterSpacing: "1px" }}>{current + 1} / {PHOTOS.length}</p>
     </div>
   );
 }
 
+// ── PAGE: Messages ─────────────────────────────────────────────────────────
+
 function MessageCard({ msg, active, onClick }) {
   return (
-    <div onClick={onClick} style={{ background: active ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.05)", border: `1.5px solid ${active ? msg.color : "rgba(255,255,255,0.1)"}`, borderRadius: "20px", padding: "24px", cursor: "pointer", transition: "all 0.35s cubic-bezier(0.34,1.56,0.64,1)", transform: active ? "scale(1.03) translateY(-4px)" : "scale(1)", boxShadow: active ? `0 20px 60px ${msg.color}33` : "none", backdropFilter: "blur(10px)", position: "relative", overflow: "hidden" }}>
+    <div onClick={onClick} style={{ background: active ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.05)", border: `1.5px solid ${active ? msg.color : "rgba(255,255,255,0.1)"}`, borderRadius: "20px", padding: "24px", cursor: "pointer", transition: "all 0.35s cubic-bezier(0.34,1.56,0.64,1)", transform: active ? "scale(1.02) translateY(-4px)" : "scale(1)", boxShadow: active ? `0 20px 60px ${msg.color}33` : "none", backdropFilter: "blur(10px)", position: "relative", overflow: "hidden" }}>
       {active && <div style={{ position: "absolute", inset: 0, background: `radial-gradient(circle at top left, ${msg.color}18, transparent 70%)`, borderRadius: "20px" }} />}
       <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: active ? "16px" : "0" }}>
         <div style={{ width: "48px", height: "48px", borderRadius: "50%", background: `linear-gradient(135deg, ${msg.color}cc, ${msg.color}55)`, border: `2px solid ${msg.color}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px", fontWeight: 800, color: "#fff", fontFamily: "'Playfair Display', serif", flexShrink: 0, boxShadow: active ? `0 0 20px ${msg.color}55` : "none", transition: "box-shadow 0.3s ease" }}>
@@ -167,11 +235,52 @@ function MessageCard({ msg, active, onClick }) {
   );
 }
 
-export default function FarewellApp() {
+function MessagesPage({ onBack }) {
   const [activeCard, setActiveCard] = useState(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => { setTimeout(() => setVisible(true), 50); }, []);
+
+  return (
+    <div style={{
+      minHeight: "100vh", padding: "100px 24px 80px",
+      position: "relative", zIndex: 1,
+      opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(24px)",
+      transition: "opacity 0.5s ease, transform 0.5s ease",
+    }}>
+      <BackButton onBack={onBack} />
+
+      <div style={{ maxWidth: "900px", margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: "56px" }}>
+          <p style={{ fontSize: "12px", letterSpacing: "4px", color: "#f472b6", textTransform: "uppercase", marginBottom: "16px" }}>
+            💌 Words From Your Team Members
+          </p>
+          <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 700, color: "#fff" }}>
+            With Love &{" "}
+            <span style={{ background: "linear-gradient(90deg, #f472b6, #818cf8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Gratitude</span>
+          </h2>
+          <p style={{ color: "rgba(255,255,255,0.4)", marginTop: "12px", fontSize: "14px" }}>Click a card to read the message</p>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px" }}>
+          {MESSAGES.map((msg, i) => (
+            <MessageCard key={i} msg={msg} active={activeCard === i} onClick={() => setActiveCard(activeCard === i ? null : i)} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── PAGE: Home ─────────────────────────────────────────────────────────────
+
+function HomePage({ onNavigate }) {
   const [confetti, setConfetti] = useState(false);
   const [typed, setTyped] = useState("");
+  const [visible, setVisible] = useState(false);
   const fullText = "Thank you for everything you've built, taught, and inspired. 🌸";
+
+  useEffect(() => { setTimeout(() => setVisible(true), 50); }, []);
 
   useEffect(() => {
     let i = 0;
@@ -189,6 +298,111 @@ export default function FarewellApp() {
     setConfetti(true);
     setTimeout(() => setConfetti(false), 5000);
   };
+
+  return (
+    <>
+      <Confetti active={confetti} />
+      <div style={{
+        display: "flex", flexDirection: "column", alignItems: "center",
+        justifyContent: "center", minHeight: "100vh",
+        padding: "24px 24px", textAlign: "center", position: "relative", zIndex: 1,
+        opacity: visible ? 1 : 0, transition: "opacity 0.6s ease", gap: "0px",
+      }}>
+        {/* Avatar — smaller */}
+        <div style={{ position: "relative", width: "110px", height: "110px", marginBottom: "20px" }}>
+          <div style={{ position: "absolute", inset: "-12px", borderRadius: "50%", border: "2px solid #f472b655", animation: "pulseRing 2s ease-out infinite" }} />
+          <div style={{ position: "absolute", inset: "-12px", borderRadius: "50%", border: "2px solid #818cf855", animation: "pulseRing 2s 0.7s ease-out infinite" }} />
+          <div style={{ width: "110px", height: "110px", borderRadius: "50%", background: "linear-gradient(135deg, #f472b6, #818cf8, #34d399)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "46px", boxShadow: "0 0 40px rgba(244,114,182,0.4), 0 0 80px rgba(129,140,248,0.2)", position: "relative", zIndex: 2 }}>
+            👩‍💻
+          </div>
+          {["⭐", "💛", "🌸"].map((em, i) => (
+            <div key={i} style={{ position: "absolute", top: "50%", left: "50%", marginTop: "-10px", marginLeft: "-10px", width: "20px", height: "20px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "13px", animation: `orbit ${4 + i * 1.5}s ${i * 1.2}s linear infinite`, zIndex: 3 }}>
+              {em}
+            </div>
+          ))}
+        </div>
+
+        {/* Title — tighter */}
+        <div style={{ animation: "fadeSlideUp 0.8s 0.2s both", marginBottom: "10px" }}>
+          <p style={{ fontSize: "11px", letterSpacing: "4px", textTransform: "uppercase", color: "#f472b6", fontWeight: 700, marginBottom: "6px" }}>Farewell to Our</p>
+          <h1 style={{ fontSize: "clamp(36px, 6vw, 60px)", fontFamily: "'Playfair Display', serif", fontWeight: 900, lineHeight: 1.05, background: "linear-gradient(90deg, #fbbf24, #f472b6, #818cf8, #34d399)", backgroundSize: "300% auto", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", animation: "shimmer 4s linear infinite", marginBottom: "4px" }}>Frontend</h1>
+          <h1 style={{ fontSize: "clamp(36px, 6vw, 60px)", fontFamily: "'Playfair Display', serif", fontWeight: 900, lineHeight: 1.05, color: "#ffffff", marginBottom: "0" }}>Superstar ✨</h1>
+        </div>
+
+        {/* Typewriter — compact */}
+        <div style={{ animation: "fadeSlideUp 0.8s 0.4s both", maxWidth: "500px", marginBottom: "24px" }}>
+          <p style={{ fontSize: "15px", color: "rgba(255,255,255,0.7)", lineHeight: 1.6, fontStyle: "italic", fontFamily: "'Playfair Display', serif", minHeight: "28px" }}>
+            {typed}<span style={{ opacity: typed.length < fullText.length ? 1 : 0 }}>|</span>
+          </p>
+        </div>
+
+        {/* Nav buttons — side by side, compact */}
+        <div style={{ animation: "fadeSlideUp 0.8s 0.6s both", display: "flex", gap: "16px", flexWrap: "wrap", justifyContent: "center", marginBottom: "20px" }}>
+          {/* Memories button */}
+          <button onClick={() => onNavigate("memories")} style={{
+            display: "flex", alignItems: "center", gap: "14px",
+            padding: "14px 28px", borderRadius: "14px",
+            background: "linear-gradient(135deg, #1e3a5f, #1a2a4a)",
+            border: "1.5px solid rgba(96,165,250,0.4)",
+            color: "#fff", fontWeight: 700, fontSize: "14px",
+            cursor: "pointer", fontFamily: "'Lato', sans-serif",
+            boxShadow: "0 8px 24px rgba(96,165,250,0.2)",
+            transition: "transform 0.25s, box-shadow 0.25s, border-color 0.25s",
+            minWidth: "190px", textAlign: "left",
+          }}
+            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 14px 40px rgba(96,165,250,0.35)"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.8)"; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(96,165,250,0.2)"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.4)"; }}>
+            <div style={{ fontSize: "26px", flexShrink: 0 }}>📸</div>
+            <div>
+              <div style={{ fontSize: "14px", fontWeight: 700 }}>Our Memories</div>
+              <div style={{ fontSize: "11px", color: "#60a5fa", marginTop: "2px", fontWeight: 400 }}>Photos & moments</div>
+            </div>
+          </button>
+
+          {/* Messages button */}
+          <button onClick={() => onNavigate("messages")} style={{
+            display: "flex", alignItems: "center", gap: "14px",
+            padding: "14px 28px", borderRadius: "14px",
+            background: "linear-gradient(135deg, #3d1a3a, #2a1230)",
+            border: "1.5px solid rgba(244,114,182,0.4)",
+            color: "#fff", fontWeight: 700, fontSize: "14px",
+            cursor: "pointer", fontFamily: "'Lato', sans-serif",
+            boxShadow: "0 8px 24px rgba(244,114,182,0.2)",
+            transition: "transform 0.25s, box-shadow 0.25s, border-color 0.25s",
+            minWidth: "190px", textAlign: "left",
+          }}
+            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 14px 40px rgba(244,114,182,0.35)"; e.currentTarget.style.borderColor = "rgba(244,114,182,0.8)"; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(244,114,182,0.2)"; e.currentTarget.style.borderColor = "rgba(244,114,182,0.4)"; }}>
+            <div style={{ fontSize: "26px", flexShrink: 0 }}>💌</div>
+            <div>
+              <div style={{ fontSize: "14px", fontWeight: 700 }}>Team Messages</div>
+              <div style={{ fontSize: "11px", color: "#f472b6", marginTop: "2px", fontWeight: 400 }}>Words from the heart</div>
+            </div>
+          </button>
+        </div>
+
+        {/* Confetti button */}
+        <div style={{ animation: "fadeSlideUp 0.8s 0.8s both" }}>
+          <button onClick={fireConfetti} style={{ padding: "10px 24px", borderRadius: "999px", background: "rgba(255,255,255,0.07)", color: "#fff", fontWeight: 600, fontSize: "13px", border: "1px solid rgba(255,255,255,0.15)", cursor: "pointer", fontFamily: "'Lato', sans-serif", transition: "background 0.2s" }}
+            onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.13)"}
+            onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.07)"}>
+            🎉 Celebrate Her!
+          </button>
+        </div>
+
+        {/* Footer */}
+        <p style={{ marginTop: "16px", color: "rgba(255,255,255,0.2)", fontSize: "11px", letterSpacing: "1px" }}>
+          Made with ❤️ by your team · Keep building beautiful things
+        </p>
+      </div>
+    </>
+  );
+}
+
+// ── Root App ───────────────────────────────────────────────────────────────
+
+export default function FarewellApp() {
+  const [page, setPage] = useState("home");
 
   return (
     <>
@@ -232,99 +446,12 @@ export default function FarewellApp() {
         ::-webkit-scrollbar-thumb { background: #4f4f7a; border-radius: 3px; }
       `}</style>
 
-      <Confetti active={confetti} />
       <FloatingParticles />
 
-      <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #0d0d1a 0%, #1a0d2e 40%, #0d1a2e 100%)", color: "#fff", fontFamily: "'Lato', sans-serif", position: "relative", zIndex: 1 }}>
-
-        {/* Hero */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "100vh", padding: "60px 24px", textAlign: "center", position: "relative" }}>
-          <div style={{ position: "relative", width: "180px", height: "180px", marginBottom: "40px" }}>
-            <div style={{ position: "absolute", inset: "-20px", borderRadius: "50%", border: "2px solid #f472b655", animation: "pulseRing 2s ease-out infinite" }} />
-            <div style={{ position: "absolute", inset: "-20px", borderRadius: "50%", border: "2px solid #818cf855", animation: "pulseRing 2s 0.7s ease-out infinite" }} />
-            <div style={{ width: "180px", height: "180px", borderRadius: "50%", background: "linear-gradient(135deg, #f472b6, #818cf8, #34d399)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "72px", boxShadow: "0 0 60px rgba(244,114,182,0.4), 0 0 120px rgba(129,140,248,0.2)", position: "relative", zIndex: 2 }}>
-              👩‍💻
-            </div>
-            {["⭐", "💛", "🌸"].map((em, i) => (
-              <div key={i} style={{ position: "absolute", top: "50%", left: "50%", marginTop: "-14px", marginLeft: "-14px", width: "28px", height: "28px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px", animation: `orbit ${4 + i * 1.5}s ${i * 1.2}s linear infinite`, zIndex: 3 }}>
-                {em}
-              </div>
-            ))}
-          </div>
-
-          <div style={{ animation: "fadeSlideUp 0.8s 0.2s both" }}>
-            <p style={{ fontSize: "13px", letterSpacing: "4px", textTransform: "uppercase", color: "#f472b6", fontWeight: 700, marginBottom: "12px" }}>Farewell to Our</p>
-            <h1 style={{ fontSize: "clamp(42px, 8vw, 80px)", fontFamily: "'Playfair Display', serif", fontWeight: 900, lineHeight: 1.1, background: "linear-gradient(90deg, #fbbf24, #f472b6, #818cf8, #34d399)", backgroundSize: "300% auto", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", animation: "shimmer 4s linear infinite", marginBottom: "8px" }}>Frontend</h1>
-            <h1 style={{ fontSize: "clamp(42px, 8vw, 80px)", fontFamily: "'Playfair Display', serif", fontWeight: 900, lineHeight: 1.1, color: "#ffffff", marginBottom: "24px" }}>Superstar ✨</h1>
-          </div>
-
-          <div style={{ animation: "fadeSlideUp 0.8s 0.4s both", maxWidth: "560px", marginBottom: "40px" }}>
-            <p style={{ fontSize: "18px", color: "rgba(255,255,255,0.75)", lineHeight: 1.8, fontStyle: "italic", fontFamily: "'Playfair Display', serif", minHeight: "60px" }}>
-              {typed}<span style={{ opacity: typed.length < fullText.length ? 1 : 0 }}>|</span>
-            </p>
-          </div>
-
-          <div style={{ animation: "fadeSlideUp 0.8s 0.6s both" }}>
-            <button onClick={fireConfetti} style={{ padding: "16px 36px", borderRadius: "999px", background: "linear-gradient(135deg, #f472b6, #818cf8)", color: "#fff", fontWeight: 700, fontSize: "16px", border: "none", cursor: "pointer", fontFamily: "'Lato', sans-serif", letterSpacing: "0.5px", boxShadow: "0 8px 32px rgba(244,114,182,0.4)", transition: "transform 0.2s, box-shadow 0.2s" }}
-              onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.05)"; e.currentTarget.style.boxShadow = "0 12px 48px rgba(244,114,182,0.6)"; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 8px 32px rgba(244,114,182,0.4)"; }}>
-              🎉 Celebrate Her!
-            </button>
-          </div>
-
-          <div style={{ position: "absolute", bottom: "32px", animation: "fadeSlideUp 1s 1.5s both", display: "flex", flexDirection: "column", alignItems: "center", gap: "6px", opacity: 0.5 }}>
-            <p style={{ fontSize: "12px", letterSpacing: "2px", textTransform: "uppercase" }}>Scroll to explore</p>
-            <div style={{ width: "1px", height: "40px", background: "linear-gradient(to bottom, white, transparent)" }} />
-          </div>
-        </div>
-
-        {/* Divider */}
-        <div style={{ maxWidth: "600px", margin: "0 auto", height: "1px", background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)" }} />
-
-        {/* Photo Carousel */}
-        <PhotoCarousel />
-
-        {/* Divider */}
-        <div style={{ maxWidth: "600px", margin: "0 auto", height: "1px", background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent)" }} />
-
-        {/* Messages */}
-        <div style={{ padding: "80px 24px", maxWidth: "900px", margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: "48px" }}>
-            <p style={{ fontSize: "12px", letterSpacing: "4px", color: "#f472b6", textTransform: "uppercase", marginBottom: "16px" }}>Words From Your Team Members</p>
-            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 700 }}>
-              With Love &{" "}
-              <span style={{ background: "linear-gradient(90deg, #f472b6, #818cf8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Gratitude</span>
-            </h2>
-            <p style={{ color: "rgba(255,255,255,0.5)", marginTop: "12px" }}>Click a card to read the message</p>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px" }}>
-            {MESSAGES.map((msg, i) => (
-              <MessageCard key={i} msg={msg} active={activeCard === i} onClick={() => setActiveCard(activeCard === i ? null : i)} />
-            ))}
-          </div>
-        </div>
-
-        {/* Closing */}
-        <div style={{ padding: "80px 24px 120px", textAlign: "center", position: "relative" }}>
-          <div style={{ maxWidth: "640px", margin: "0 auto", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "32px", padding: "60px 40px", backdropFilter: "blur(20px)", position: "relative", overflow: "hidden" }}>
-            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "3px", background: "linear-gradient(90deg, #fbbf24, #f472b6, #818cf8, #34d399)" }} />
-            <div style={{ fontSize: "56px", animation: "beatHeart 1.5s ease-in-out infinite", display: "inline-block", marginBottom: "24px" }}>💛</div>
-            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(24px, 4vw, 38px)", fontWeight: 700, marginBottom: "20px", lineHeight: 1.3 }}>
-              Wishing You the Most <span style={{ color: "#fbbf24", fontStyle: "italic" }}>Beautiful</span> Next Chapter
-            </h3>
-            <p style={{ color: "rgba(255,255,255,0.65)", fontSize: "16px", lineHeight: 1.8, maxWidth: "460px", margin: "0 auto 32px" }}>
-              You didn't just write code — you wrote culture. You shaped how we think, how we build, and how we care about craft. Wherever you go next, they're incredibly lucky to have you. 🌟
-            </p>
-            <div style={{ display: "flex", justifyContent: "center", gap: "8px", flexWrap: "wrap" }}>
-              {["🚀 New Adventures", "✨ Big Dreams", "💻 Great Code"].map((tag) => (
-                <span key={tag} style={{ padding: "8px 18px", borderRadius: "999px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", fontSize: "13px", color: "rgba(255,255,255,0.7)" }}>{tag}</span>
-              ))}
-            </div>
-          </div>
-          <p style={{ marginTop: "60px", color: "rgba(255,255,255,0.25)", fontSize: "13px", letterSpacing: "1px" }}>
-            Made with ❤️ by your team · Keep building beautiful things
-          </p>
-        </div>
+      <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #0d0d1a 0%, #1a0d2e 40%, #0d1a2e 100%)", color: "#fff", fontFamily: "'Lato', sans-serif", position: "relative" }}>
+        {page === "home"      && <HomePage      onNavigate={setPage} />}
+        {page === "memories"  && <MemoriesPage  onBack={() => setPage("home")} />}
+        {page === "messages"  && <MessagesPage  onBack={() => setPage("home")} />}
       </div>
     </>
   );
