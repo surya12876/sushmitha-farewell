@@ -10,8 +10,8 @@ const MESSAGES = [
 ];
 
 const PHOTOS = [
-  { id: 1, url: "picatrjp.png", caption:"first team pic", tag: "first team pic" },
-  { id: 2, url: "pic_at_ch.png", caption: "at charminar", tag: "Fun Times" },
+  { id: 1, url: "images/picatrjp.png", caption:"first team pic", tag: "first team pic" },
+  { id: 2, url: "images/pic_at_ch.png", caption: "at charminar", tag: "Fun Times" },
   { id: 3, url: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800&q=80", caption: "Sprint Planning Sessions ☕", tag: "Work Hard" },
   { id: 4, url: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&q=80", caption: "Annual Team Outing 🎉", tag: "Play Hard" },
   { id: 5, url: "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=800&q=80", caption: "Office Celebrations 🎂", tag: "Together" },
