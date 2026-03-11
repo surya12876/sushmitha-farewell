@@ -1,17 +1,17 @@
 import { useState, useEffect, useRef } from "react";
 
 const MESSAGES = [
-  { name: "Surya",  msg: "Working alongside you has been the highlight of my career so far. You always had the perfect solution — and somehow made it look effortless. I'll miss our late-night debug sessions! 💛", color: "#f59e0b", avatar: "A" },
-  { name: "Gowtham",  msg: "You were the only dev who never said 'that's not possible in CSS'. You brought every single design to life with such care. The team won't be the same without you! 🌸", color: "#f472b6", avatar: "P" },
-  { name: "Ganesh",  msg: "I barely understand what you do but I know it's pure magic. Every screen you touched became a masterpiece. Wishing you the best on your new journey, legend! 🚀", color: "#10b981", avatar: "R" },
-  { name: "Tejaswini",  msg: "You were the one developer who actually loved when I raised bugs — and fixed them faster than I could log them! You set the bar for quality. We'll miss you so much! ⭐", color: "#818cf8", avatar: "S" },
-  { name: "nitin", msg: "You've mentored, inspired and uplifted everyone around you. You didn't just write great code — you built a great team culture. Wherever you go, they're getting the best. 🏆", color: "#fb923c", avatar: "K" },
-  // { name: "",  msg: "From pair programming to coffee chats — every moment working with you was a learning experience. Your passion for clean, accessible UI is something I'll carry forward forever. 💻", color: "#34d399", avatar: "M" },
+  { name: "Aarav", role: "Frontend Developer", msg: "Working alongside you has been the highlight of my career so far. You always had the perfect solution — and somehow made it look effortless. I'll miss our late-night debug sessions! 💛", color: "#f59e0b", avatar: "A" },
+  { name: "Priya", role: "UI/UX Designer", msg: "You were the only dev who never said 'that's not possible in CSS'. You brought every single design to life with such care. The team won't be the same without you! 🌸", color: "#f472b6", avatar: "P" },
+  { name: "Rohan", role: "Backend Developer", msg: "I barely understand what you do but I know it's pure magic. Every screen you touched became a masterpiece. Wishing you the best on your new journey, legend! 🚀", color: "#10b981", avatar: "R" },
+  { name: "Sneha", role: "QA Engineer", msg: "You were the one developer who actually loved when I raised bugs — and fixed them faster than I could log them! You set the bar for quality. We'll miss you so much! ⭐", color: "#818cf8", avatar: "S" },
+  { name: "Kiran", role: "Team Lead", msg: "You've mentored, inspired and uplifted everyone around you. You didn't just write great code — you built a great team culture. Wherever you go, they're getting the best. 🏆", color: "#fb923c", avatar: "K" },
+  { name: "Meera", role: "Full Stack Developer", msg: "From pair programming to coffee chats — every moment working with you was a learning experience. Your passion for clean, accessible UI is something I'll carry forward forever. 💻", color: "#34d399", avatar: "M" },
 ];
 
 const PHOTOS = [
-  { id: 1, url: "src/assets/picatrjp.png", caption:"first team pic", tag: "first team pic" },
-  { id: 2, url: "src/assets/pic_at_ch.png", caption: "at charminar", tag: "Fun Times" },
+  { id: 1, url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80", caption: "Team Hackathon 2023 🏆", tag: "Memories" },
+  { id: 2, url: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=80", caption: "Lunch Squad Forever 🍕", tag: "Fun Times" },
   { id: 3, url: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800&q=80", caption: "Sprint Planning Sessions ☕", tag: "Work Hard" },
   { id: 4, url: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&q=80", caption: "Annual Team Outing 🎉", tag: "Play Hard" },
   { id: 5, url: "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=800&q=80", caption: "Office Celebrations 🎂", tag: "Together" },
@@ -373,177 +373,38 @@ function MessageCard({ msg, onClick }) {
 }
 
 function MessagesPage({ onBack }) {
-  const [current, setCurrent] = useState(0);
-  const [animDir, setAnimDir] = useState(null);
-  const [isAnimating, setIsAnimating] = useState(false);
   const [selectedMsg, setSelectedMsg] = useState(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => { setTimeout(() => setVisible(true), 50); }, []);
 
-  const goTo = (idx, dir) => {
-    if (isAnimating) return;
-    setAnimDir(dir);
-    setIsAnimating(true);
-    setTimeout(() => { setCurrent(idx); setIsAnimating(false); setAnimDir(null); }, 350);
-  };
-
-  const prev = () => goTo((current - 1 + MESSAGES.length) % MESSAGES.length, "left");
-  const next = () => goTo((current + 1) % MESSAGES.length, "right");
-
-  const prevIdx = (current - 1 + MESSAGES.length) % MESSAGES.length;
-  const nextIdx = (current + 1) % MESSAGES.length;
-  const msg = MESSAGES[current];
-
   return (
     <div style={{
-      minHeight: "100vh", padding: "80px 24px 60px",
-      position: "relative", zIndex: 1, display: "flex", flexDirection: "column",
-      alignItems: "center", justifyContent: "center",
+      minHeight: "100vh", padding: "100px 24px 80px",
+      position: "relative", zIndex: 1,
       opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(24px)",
       transition: "opacity 0.5s ease, transform 0.5s ease",
     }}>
       <BackButton onBack={onBack} />
       {selectedMsg && <MessageModal msg={selectedMsg} onClose={() => setSelectedMsg(null)} />}
 
-      {/* Header */}
-      <div style={{ textAlign: "center", marginBottom: "36px" }}>
-        <p style={{ fontSize: "11px", letterSpacing: "4px", color: "#f472b6", textTransform: "uppercase", marginBottom: "10px" }}>
-          💌 Words From Your Team Members
-        </p>
-        <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(26px, 4vw, 44px)", fontWeight: 700, color: "#fff" }}>
-          With Love &{" "}
-          <span style={{ background: "linear-gradient(90deg, #f472b6, #818cf8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Gratitude</span>
-        </h2>
-      </div>
-
-      {/* Carousel */}
-      <div style={{ width: "100%", maxWidth: "860px" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "16px" }}>
-
-          {/* Prev thumbnail */}
-          <div onClick={prev} style={{
-            width: "70px", flexShrink: 0, cursor: "pointer",
-            opacity: 0.4, transition: "opacity 0.3s, transform 0.3s", transform: "scale(0.92)",
-          }}
-            onMouseEnter={e => { e.currentTarget.style.opacity = "0.7"; e.currentTarget.style.transform = "scale(0.96)"; }}
-            onMouseLeave={e => { e.currentTarget.style.opacity = "0.4"; e.currentTarget.style.transform = "scale(0.92)"; }}
-          >
-            <div style={{
-              background: "rgba(255,255,255,0.05)", border: `1.5px solid ${MESSAGES[prevIdx].color}55`,
-              borderRadius: "16px", padding: "14px 10px", textAlign: "center",
-            }}>
-              <div style={{
-                width: "36px", height: "36px", borderRadius: "50%", margin: "0 auto 6px",
-                background: `linear-gradient(135deg, ${MESSAGES[prevIdx].color}cc, ${MESSAGES[prevIdx].color}55)`,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: "14px", fontWeight: 800, color: "#fff",
-              }}>{MESSAGES[prevIdx].avatar}</div>
-              <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.6)", fontFamily: "'Lato', sans-serif", fontWeight: 600 }}>{MESSAGES[prevIdx].name}</div>
-            </div>
-          </div>
-
-          {/* Main card */}
-          <div style={{ flex: 1, maxWidth: "580px" }}>
-            <div style={{
-              transition: "opacity 0.35s ease, transform 0.35s ease",
-              opacity: isAnimating ? 0 : 1,
-              transform: isAnimating ? `translateX(${animDir === "right" ? "-40px" : "40px"})` : "translateX(0)",
-            }}>
-              <div style={{
-                background: "rgba(255,255,255,0.06)", border: `1.5px solid ${msg.color}66`,
-                borderRadius: "24px", overflow: "hidden",
-                boxShadow: `0 20px 60px ${msg.color}22`,
-              }}>
-                {/* Top color bar */}
-                <div style={{ height: "4px", background: `linear-gradient(90deg, ${msg.color}, ${msg.color}55)` }} />
-                <div style={{ padding: "28px 28px 24px" }}>
-                  {/* Avatar + info */}
-                  <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
-                    <div style={{
-                      width: "56px", height: "56px", borderRadius: "50%",
-                      background: `linear-gradient(135deg, ${msg.color}cc, ${msg.color}55)`,
-                      border: `2px solid ${msg.color}`,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: "22px", fontWeight: 800, color: "#fff",
-                      boxShadow: `0 0 20px ${msg.color}44`,
-                    }}>{msg.avatar}</div>
-                    <div>
-                      <div style={{ color: "#fff", fontWeight: 700, fontSize: "18px", fontFamily: "'Playfair Display', serif" }}>{msg.name}</div>
-                      <div style={{ color: msg.color, fontSize: "11px", fontWeight: 600, letterSpacing: "1.5px", textTransform: "uppercase", marginTop: "2px" }}>{msg.role}</div>
-                    </div>
-                    <div style={{ marginLeft: "auto" }}>
-                      <span style={{ fontSize: "28px", color: msg.color, fontFamily: "Georgia, serif", fontWeight: 900, opacity: 0.6 }}>"</span>
-                    </div>
-                  </div>
-                  {/* Message */}
-                  <p style={{
-                    color: "rgba(255,255,255,0.85)", fontSize: "15px", lineHeight: 1.8,
-                    fontFamily: "'Lato', sans-serif", margin: "0 0 20px",
-                    borderLeft: `3px solid ${msg.color}55`, paddingLeft: "16px",
-                  }}>{msg.msg}</p>
-                  {/* Read full button */}
-                  <button onClick={() => setSelectedMsg(msg)} style={{
-                    padding: "9px 20px", borderRadius: "999px",
-                    background: `${msg.color}22`, border: `1px solid ${msg.color}55`,
-                    color: msg.color, fontSize: "12px", fontWeight: 700,
-                    cursor: "pointer", fontFamily: "'Lato', sans-serif",
-                    transition: "background 0.2s",
-                  }}
-                    onMouseEnter={e => e.currentTarget.style.background = `${msg.color}44`}
-                    onMouseLeave={e => e.currentTarget.style.background = `${msg.color}22`}
-                  >
-                    💬 Open as Message
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Next thumbnail */}
-          <div onClick={next} style={{
-            width: "70px", flexShrink: 0, cursor: "pointer",
-            opacity: 0.4, transition: "opacity 0.3s, transform 0.3s", transform: "scale(0.92)",
-          }}
-            onMouseEnter={e => { e.currentTarget.style.opacity = "0.7"; e.currentTarget.style.transform = "scale(0.96)"; }}
-            onMouseLeave={e => { e.currentTarget.style.opacity = "0.4"; e.currentTarget.style.transform = "scale(0.92)"; }}
-          >
-            <div style={{
-              background: "rgba(255,255,255,0.05)", border: `1.5px solid ${MESSAGES[nextIdx].color}55`,
-              borderRadius: "16px", padding: "14px 10px", textAlign: "center",
-            }}>
-              <div style={{
-                width: "36px", height: "36px", borderRadius: "50%", margin: "0 auto 6px",
-                background: `linear-gradient(135deg, ${MESSAGES[nextIdx].color}cc, ${MESSAGES[nextIdx].color}55)`,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: "14px", fontWeight: 800, color: "#fff",
-              }}>{MESSAGES[nextIdx].avatar}</div>
-              <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.6)", fontFamily: "'Lato', sans-serif", fontWeight: 600 }}>{MESSAGES[nextIdx].name}</div>
-            </div>
-          </div>
+      <div style={{ maxWidth: "900px", margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: "48px" }}>
+          <p style={{ fontSize: "12px", letterSpacing: "4px", color: "#f472b6", textTransform: "uppercase", marginBottom: "16px" }}>
+            💌 Words From Your Team Members
+          </p>
+          <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(32px, 5vw, 52px)", fontWeight: 700, color: "#fff" }}>
+            With Love &{" "}
+            <span style={{ background: "linear-gradient(90deg, #f472b6, #818cf8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Gratitude</span>
+          </h2>
+          <p style={{ color: "rgba(255,255,255,0.4)", marginTop: "12px", fontSize: "14px" }}>Click a card to read the message</p>
         </div>
 
-        {/* Controls */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "14px", marginTop: "24px" }}>
-          <button onClick={prev} style={{ width: "40px", height: "40px", borderRadius: "50%", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", fontSize: "16px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s" }}
-            onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.15)"}
-            onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.07)"}>←</button>
-          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-            {MESSAGES.map((m, i) => (
-              <button key={i} onClick={() => goTo(i, i > current ? "right" : "left")} style={{
-                width: i === current ? "24px" : "8px", height: "8px", borderRadius: "999px",
-                background: i === current ? MESSAGES[current].color : "rgba(255,255,255,0.25)",
-                border: "none", cursor: "pointer", padding: 0, transition: "all 0.3s ease",
-              }} />
-            ))}
-          </div>
-          <button onClick={next} style={{ width: "40px", height: "40px", borderRadius: "50%", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", fontSize: "16px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s" }}
-            onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.15)"}
-            onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.07)"}>→</button>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "20px" }}>
+          {MESSAGES.map((msg, i) => (
+            <MessageCard key={i} msg={msg} onClick={() => setSelectedMsg(msg)} />
+          ))}
         </div>
-        <p style={{ textAlign: "center", marginTop: "10px", color: "rgba(255,255,255,0.3)", fontSize: "12px", letterSpacing: "1px" }}>
-          {current + 1} / {MESSAGES.length}
-        </p>
       </div>
     </div>
   );
