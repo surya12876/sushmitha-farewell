@@ -12,10 +12,10 @@ const MESSAGES = [
 const PHOTOS = [
   { id: 1, url: "images/picatrjp.png", caption:"first team pic", tag: "first team pic" },
   { id: 2, url: "images/pic_at_ch.png", caption: "at charminar", tag: "Fun Times" },
-  { id: 3, url: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800&q=80", caption: "Sprint Planning Sessions ☕", tag: "Work Hard" },
-  { id: 4, url: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&q=80", caption: "Annual Team Outing 🎉", tag: "Play Hard" },
-  { id: 5, url: "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=800&q=80", caption: "Office Celebrations 🎂", tag: "Together" },
-  { id: 6, url: "https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?w=800&q=80", caption: "The Gang's All Here 💛", tag: "Best Days" },
+  { id: 3, url: "images/image1.png", caption: "Sprint Planning Sessions ☕", tag: "Work Hard" },
+  { id: 4, url: "images/image2.jpeg", caption: "Annual Team Outing 🎉", tag: "Play Hard" },
+  { id: 5, url: "images/image3.jpeg", caption: "Office Celebrations 🎂", tag: "Together" },
+ 
 ];
 
 // ── Shared background effects ──────────────────────────────────────────────
@@ -96,14 +96,46 @@ function BackButton({ onBack }) {
   );
 }
 
-// ── PAGE: Memories ─────────────────────────────────────────────────────────
+// ── COMBINED PAGE: Memories + Messages ────────────────────────────────────
+
+function MessageModal({ msg, onClose }) {
+  if (!msg) return null;
+  return (
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 200, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px", animation: "fadeIn 0.25s ease" }}>
+      <div onClick={e => e.stopPropagation()} style={{ background: "#fff", borderRadius: "24px", width: "100%", maxWidth: "460px", boxShadow: "0 32px 80px rgba(0,0,0,0.4)", overflow: "hidden", animation: "popIn 0.35s cubic-bezier(0.34,1.56,0.64,1)" }}>
+        <div style={{ height: "5px", background: `linear-gradient(90deg, ${msg.color}, ${msg.color}88)` }} />
+        <div style={{ display: "flex", alignItems: "center", gap: "14px", padding: "20px 24px 16px", borderBottom: "1px solid rgba(0,0,0,0.07)" }}>
+          <div style={{ width: "52px", height: "52px", borderRadius: "50%", background: `linear-gradient(135deg, ${msg.color}cc, ${msg.color}55)`, border: `2px solid ${msg.color}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px", fontWeight: 800, color: "#fff", fontFamily: "'Playfair Display', serif", flexShrink: 0, boxShadow: `0 4px 16px ${msg.color}44` }}>{msg.avatar}</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ color: "#111", fontWeight: 700, fontSize: "17px", fontFamily: "'Playfair Display', serif" }}>{msg.name}</div>
+            <div style={{ color: msg.color, fontSize: "11px", fontWeight: 600, letterSpacing: "1.5px", textTransform: "uppercase", marginTop: "2px" }}>{msg.role}</div>
+          </div>
+          <button onClick={onClose} style={{ width: "32px", height: "32px", borderRadius: "50%", background: "rgba(0,0,0,0.06)", border: "none", cursor: "pointer", fontSize: "16px", color: "#666", display: "flex", alignItems: "center", justifyContent: "center" }}
+            onMouseEnter={e => e.currentTarget.style.background = "rgba(0,0,0,0.12)"}
+            onMouseLeave={e => e.currentTarget.style.background = "rgba(0,0,0,0.06)"}>✕</button>
+        </div>
+        <div style={{ padding: "20px 24px 24px" }}>
+          <span style={{ fontSize: "36px", color: msg.color, fontFamily: "Georgia, serif", fontWeight: 900, lineHeight: 1, display: "block", marginBottom: "6px", opacity: 0.7 }}>"</span>
+          <div style={{ background: `linear-gradient(135deg, ${msg.color}12, ${msg.color}06)`, border: `1px solid ${msg.color}30`, borderRadius: "4px 18px 18px 18px", padding: "16px 18px" }}>
+            <p style={{ color: "#222", fontSize: "15px", lineHeight: 1.8, fontFamily: "'Lato', sans-serif", margin: 0, fontWeight: 500 }}>{msg.msg}</p>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "14px" }}>
+            <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#4ade80" }} />
+            <span style={{ fontSize: "11px", color: "#999", fontFamily: "'Lato', sans-serif" }}>Sent with love 💛 · Farewell 2025</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function MemoriesPage({ onBack }) {
   const [current, setCurrent] = useState(0);
   const [animDir, setAnimDir] = useState(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [visible, setVisible] = useState(false);
-  const timerRef = useRef(null);
+  const [selectedMsg, setSelectedMsg] = useState(null);
+
 
   useEffect(() => { setTimeout(() => setVisible(true), 50); }, []);
 
@@ -117,12 +149,10 @@ function MemoriesPage({ onBack }) {
   const prev = () => goTo((current - 1 + PHOTOS.length) % PHOTOS.length, "left");
   const next = () => goTo((current + 1) % PHOTOS.length, "right");
 
-  useEffect(() => {
-    timerRef.current = setTimeout(next, 4000);
-    return () => clearTimeout(timerRef.current);
-  }, [current]);
+
 
   const photo = PHOTOS[current];
+  const msg = MESSAGES[current % MESSAGES.length];
   const prevIdx = (current - 1 + PHOTOS.length) % PHOTOS.length;
   const nextIdx = (current + 1) % PHOTOS.length;
 
@@ -135,415 +165,133 @@ function MemoriesPage({ onBack }) {
       transition: "opacity 0.5s ease, transform 0.5s ease",
     }}>
       <BackButton onBack={onBack} />
+      {selectedMsg && <MessageModal msg={selectedMsg} onClose={() => setSelectedMsg(null)} />}
 
-      <p style={{ fontSize: "11px", letterSpacing: "4px", color: "#60a5fa", textTransform: "uppercase", marginBottom: "8px" }}>
-        📸 Moments We'll Cherish
-      </p>
-      <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(24px, 3.5vw, 38px)", fontWeight: 700, marginBottom: "20px", color: "#fff", textAlign: "center" }}>
-        Our <span style={{ color: "#60a5fa", fontStyle: "italic" }}>Memories</span> Together
+      <p style={{ fontSize: "11px", letterSpacing: "4px", color: "#60a5fa", textTransform: "uppercase", marginBottom: "8px" }}>📸 Moments & Messages</p>
+      <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(22px, 3vw, 34px)", fontWeight: 700, marginBottom: "20px", color: "#fff", textAlign: "center" }}>
+        Our <span style={{ color: "#60a5fa", fontStyle: "italic" }}>Memories</span> &{" "}
+        <span style={{ background: "linear-gradient(90deg, #f472b6, #818cf8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Words</span>
       </h2>
 
-      <div style={{ width: "100%", maxWidth: "860px" }}>
-        <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center", gap: "14px" }}>
-          {/* Prev thumbnail */}
-          <div onClick={prev} style={{ width: "60px", height: "80px", borderRadius: "10px", overflow: "hidden", cursor: "pointer", flexShrink: 0, opacity: 0.4, transition: "opacity 0.3s, transform 0.3s", transform: "scale(0.92)" }}
-            onMouseEnter={e => { e.currentTarget.style.opacity = "0.7"; e.currentTarget.style.transform = "scale(0.96)"; }}
+      <div style={{ width: "100%", maxWidth: "1100px" }}>
+        {/* Carousel row */}
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+
+          {/* Prev thumb */}
+          <div onClick={prev} style={{ width: "52px", flexShrink: 0, cursor: "pointer", opacity: 0.4, transition: "opacity 0.3s, transform 0.3s", transform: "scale(0.92)" }}
+            onMouseEnter={e => { e.currentTarget.style.opacity = "0.7"; e.currentTarget.style.transform = "scale(0.97)"; }}
             onMouseLeave={e => { e.currentTarget.style.opacity = "0.4"; e.currentTarget.style.transform = "scale(0.92)"; }}>
-            <img src={PHOTOS[prevIdx].url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <div style={{ borderRadius: "10px", overflow: "hidden", height: "70px" }}>
+              <img src={PHOTOS[prevIdx].url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            </div>
           </div>
 
-          {/* Main slide */}
-          <div style={{ flex: 1, maxWidth: "640px", position: "relative", borderRadius: "18px", overflow: "hidden", boxShadow: "0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08)" }}>
-            <div style={{ transition: "opacity 0.38s ease, transform 0.38s ease", opacity: isAnimating ? 0 : 1, transform: isAnimating ? `translateX(${animDir === "right" ? "-40px" : "40px"})` : "translateX(0)" }}>
-              <img src={photo.url} alt={photo.caption} style={{ width: "100%", height: "300px", objectFit: "cover", display: "block" }} />
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%)" }} />
-              <div style={{ position: "absolute", top: "20px", left: "20px", background: "rgba(96,165,250,0.25)", border: "1px solid rgba(96,165,250,0.5)", color: "#60a5fa", padding: "4px 14px", borderRadius: "999px", fontSize: "11px", fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", backdropFilter: "blur(8px)" }}>
-                {photo.tag}
+          {/* Main card — photo left, message right */}
+          <div style={{
+            flex: 1,
+transition: "opacity 0.3s ease",
+            opacity: isAnimating ? 0 : 1,
+          }}>
+            <div style={{
+              display: "grid", gridTemplateColumns: "1fr 1fr",
+              borderRadius: "20px", overflow: "hidden",
+              boxShadow: `0 24px 64px rgba(0,0,0,0.5), 0 0 0 1px ${msg.color}22`,
+            }}>
+
+              {/* Photo side */}
+              <div style={{ position: "relative", minHeight: "420px" }}>
+                <img src={photo.url} alt={photo.caption} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", position: "absolute", inset: 0 }} />
+                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.1) 50%)" }} />
+                <div style={{ position: "absolute", top: "16px", left: "16px", background: "rgba(96,165,250,0.25)", border: "1px solid rgba(96,165,250,0.5)", color: "#60a5fa", padding: "3px 12px", borderRadius: "999px", fontSize: "10px", fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", backdropFilter: "blur(8px)" }}>
+                  {photo.tag}
+                </div>
+                <div style={{ position: "absolute", bottom: "20px", left: "20px", right: "20px" }}>
+                  <p style={{ color: "#fff", fontSize: "16px", fontWeight: 700, fontFamily: "'Playfair Display', serif", textShadow: "0 2px 8px rgba(0,0,0,0.6)" }}>{photo.caption}</p>
+                </div>
               </div>
-              <div style={{ position: "absolute", bottom: "24px", left: "24px", right: "24px", textAlign: "left" }}>
-                <p style={{ color: "#fff", fontSize: "20px", fontWeight: 700, fontFamily: "'Playfair Display', serif", textShadow: "0 2px 8px rgba(0,0,0,0.5)" }}>{photo.caption}</p>
+
+              {/* Message side */}
+              <div style={{
+                padding: "32px 28px",
+                background: `linear-gradient(160deg, ${msg.color}15, rgba(13,13,26,0.95))`,
+                borderLeft: `1px solid ${msg.color}30`,
+                display: "flex", flexDirection: "column",
+              }}>
+                <div style={{ height: "3px", background: `linear-gradient(90deg, ${msg.color}, transparent)`, borderRadius: "2px", marginBottom: "20px" }} />
+                <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
+                  <div style={{
+                    width: "48px", height: "48px", borderRadius: "50%", flexShrink: 0,
+                    background: `linear-gradient(135deg, ${msg.color}cc, ${msg.color}55)`,
+                    border: `2px solid ${msg.color}`,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: "18px", fontWeight: 800, color: "#fff",
+                    boxShadow: `0 0 16px ${msg.color}44`,
+                  }}>{msg.avatar}</div>
+                  <div>
+                    <div style={{ color: "#fff", fontWeight: 700, fontSize: "18px", fontFamily: "'Playfair Display', serif" }}>{msg.name}</div>
+                    <div style={{ color: msg.color, fontSize: "11.5px", fontWeight: 600, letterSpacing: "1.5px", textTransform: "uppercase", marginTop: "2px" }}>{msg.role}</div>
+                  </div>
+                  <span style={{ marginLeft: "auto", fontSize: "24px", color: msg.color, fontFamily: "Georgia, serif", fontWeight: 900, opacity: 0.5, alignSelf: "flex-start" }}>"</span>
+                </div>
+                <p style={{
+                  color: "rgba(255,255,255,0.88)", fontSize: "15.5px", lineHeight: 1.85,
+                  fontFamily: "'Lato', sans-serif", flex: 1,
+                  borderLeft: `2px solid ${msg.color}55`, paddingLeft: "14px",
+                  marginBottom: "16px",
+                }}>{msg.msg}</p>
+                <button onClick={() => setSelectedMsg(msg)} style={{
+                  alignSelf: "flex-start", padding: "8px 18px", borderRadius: "999px",
+                  background: `${msg.color}20`, border: `1px solid ${msg.color}55`,
+                  color: msg.color, fontSize: "11px", fontWeight: 700,
+                  cursor: "pointer", fontFamily: "'Lato', sans-serif", transition: "background 0.2s",
+                }}
+                  onMouseEnter={e => e.currentTarget.style.background = `${msg.color}40`}
+                  onMouseLeave={e => e.currentTarget.style.background = `${msg.color}20`}
+                >💬 Read full message</button>
               </div>
             </div>
           </div>
 
-          {/* Next thumbnail */}
-          <div onClick={next} style={{ width: "60px", height: "80px", borderRadius: "10px", overflow: "hidden", cursor: "pointer", flexShrink: 0, opacity: 0.4, transition: "opacity 0.3s, transform 0.3s", transform: "scale(0.92)" }}
-            onMouseEnter={e => { e.currentTarget.style.opacity = "0.7"; e.currentTarget.style.transform = "scale(0.96)"; }}
+          {/* Next thumb */}
+          <div onClick={next} style={{ width: "52px", flexShrink: 0, cursor: "pointer", opacity: 0.4, transition: "opacity 0.3s, transform 0.3s", transform: "scale(0.92)" }}
+            onMouseEnter={e => { e.currentTarget.style.opacity = "0.7"; e.currentTarget.style.transform = "scale(0.97)"; }}
             onMouseLeave={e => { e.currentTarget.style.opacity = "0.4"; e.currentTarget.style.transform = "scale(0.92)"; }}>
-            <img src={PHOTOS[nextIdx].url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <div style={{ borderRadius: "10px", overflow: "hidden", height: "70px" }}>
+              <img src={PHOTOS[nextIdx].url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            </div>
           </div>
         </div>
 
         {/* Controls */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", marginTop: "14px" }}>
-          <button onClick={prev} style={{ width: "44px", height: "44px", borderRadius: "50%", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", fontSize: "18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s" }}
+          <button onClick={prev} style={{ width: "40px", height: "40px", borderRadius: "50%", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", fontSize: "18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s" }}
             onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.15)"}
             onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.07)"}>←</button>
           <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
             {PHOTOS.map((_, i) => (
-              <button key={i} onClick={() => goTo(i, i > current ? "right" : "left")} style={{ width: i === current ? "24px" : "8px", height: "8px", borderRadius: "999px", background: i === current ? "#60a5fa" : "rgba(255,255,255,0.25)", border: "none", cursor: "pointer", padding: 0, transition: "all 0.3s ease" }} />
+              <button key={i} onClick={() => goTo(i, i > current ? "right" : "left")} style={{ width: i === current ? "24px" : "8px", height: "8px", borderRadius: "999px", background: i === current ? MESSAGES[i % MESSAGES.length].color : "rgba(255,255,255,0.25)", border: "none", cursor: "pointer", padding: 0, transition: "all 0.3s ease" }} />
             ))}
           </div>
-          <button onClick={next} style={{ width: "44px", height: "44px", borderRadius: "50%", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", fontSize: "18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s" }}
+          <button onClick={next} style={{ width: "40px", height: "40px", borderRadius: "50%", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", fontSize: "18px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s" }}
             onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.15)"}
             onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.07)"}>→</button>
         </div>
         <p style={{ marginTop: "8px", color: "rgba(255,255,255,0.3)", fontSize: "12px", letterSpacing: "1px", textAlign: "center" }}>{current + 1} / {PHOTOS.length}</p>
-      </div>
 
-      {/* Thumbnail strip */}
-      <div style={{ display: "flex", gap: "8px", marginTop: "16px", flexWrap: "wrap", justifyContent: "center", maxWidth: "680px" }}>
-        {PHOTOS.map((p, i) => (
-          <div key={p.id} onClick={() => goTo(i, i > current ? "right" : "left")} style={{
-            width: "72px", height: "50px", borderRadius: "8px", overflow: "hidden", cursor: "pointer",
-            border: `2px solid ${i === current ? "#60a5fa" : "transparent"}`,
-            opacity: i === current ? 1 : 0.5, transition: "all 0.25s ease",
-            flexShrink: 0,
-          }}
-            onMouseEnter={e => { if (i !== current) e.currentTarget.style.opacity = "0.8"; }}
-            onMouseLeave={e => { if (i !== current) e.currentTarget.style.opacity = "0.5"; }}>
-            <img src={p.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ── PAGE: Messages ─────────────────────────────────────────────────────────
-
-function MessageModal({ msg, onClose }) {
-  if (!msg) return null;
-  return (
-    <div
-      onClick={onClose}
-      style={{
-        position: "fixed", inset: 0, zIndex: 200,
-        background: "rgba(0,0,0,0.6)", backdropFilter: "blur(6px)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        padding: "24px",
-        animation: "fadeIn 0.25s ease",
-      }}
-    >
-      <div
-        onClick={e => e.stopPropagation()}
-        style={{
-          background: "#fff", borderRadius: "24px",
-          width: "100%", maxWidth: "460px",
-          boxShadow: "0 32px 80px rgba(0,0,0,0.4)",
-          overflow: "hidden",
-          animation: "popIn 0.35s cubic-bezier(0.34,1.56,0.64,1)",
-          position: "relative",
-        }}
-      >
-        {/* Colored top bar */}
-        <div style={{ height: "5px", background: `linear-gradient(90deg, ${msg.color}, ${msg.color}88)` }} />
-
-        {/* Header */}
-        <div style={{
-          display: "flex", alignItems: "center", gap: "14px",
-          padding: "20px 24px 16px",
-          borderBottom: "1px solid rgba(0,0,0,0.07)",
-        }}>
-          <div style={{
-            width: "52px", height: "52px", borderRadius: "50%",
-            background: `linear-gradient(135deg, ${msg.color}cc, ${msg.color}55)`,
-            border: `2px solid ${msg.color}`,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: "20px", fontWeight: 800, color: "#fff",
-            fontFamily: "'Playfair Display', serif", flexShrink: 0,
-            boxShadow: `0 4px 16px ${msg.color}44`,
-          }}>
-            {msg.avatar}
-          </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ color: "#111", fontWeight: 700, fontSize: "17px", fontFamily: "'Playfair Display', serif" }}>{msg.name}</div>
-            <div style={{ color: msg.color, fontSize: "11px", fontWeight: 600, letterSpacing: "1.5px", textTransform: "uppercase", marginTop: "2px" }}>{msg.role}</div>
-          </div>
-          {/* Close button */}
-          <button
-            onClick={onClose}
-            style={{
-              width: "32px", height: "32px", borderRadius: "50%",
-              background: "rgba(0,0,0,0.06)", border: "none",
-              cursor: "pointer", fontSize: "16px", color: "#666",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              transition: "background 0.2s",
+        {/* Thumbnail strip */}
+        <div style={{ display: "flex", gap: "8px", marginTop: "14px", flexWrap: "wrap", justifyContent: "center" }}>
+          {PHOTOS.map((p, i) => (
+            <div key={p.id} onClick={() => goTo(i, i > current ? "right" : "left")} style={{
+              width: "68px", height: "46px", borderRadius: "8px", overflow: "hidden", cursor: "pointer",
+              border: `2px solid ${i === current ? MESSAGES[i % MESSAGES.length].color : "transparent"}`,
+              opacity: i === current ? 1 : 0.5, transition: "all 0.25s ease", flexShrink: 0,
             }}
-            onMouseEnter={e => e.currentTarget.style.background = "rgba(0,0,0,0.12)"}
-            onMouseLeave={e => e.currentTarget.style.background = "rgba(0,0,0,0.06)"}
-          >✕</button>
-        </div>
-
-        {/* Chat bubble message */}
-        <div style={{ padding: "20px 24px 24px" }}>
-          {/* Quote icon */}
-          <span style={{ fontSize: "36px", color: msg.color, fontFamily: "Georgia, serif", fontWeight: 900, lineHeight: 1, display: "block", marginBottom: "6px", opacity: 0.7 }}>"</span>
-
-          {/* Message bubble */}
-          <div style={{
-            background: `linear-gradient(135deg, ${msg.color}12, ${msg.color}06)`,
-            border: `1px solid ${msg.color}30`,
-            borderRadius: "4px 18px 18px 18px",
-            padding: "16px 18px",
-            position: "relative",
-          }}>
-            <p style={{
-              color: "#222", fontSize: "15px", lineHeight: 1.8,
-              fontFamily: "'Lato', sans-serif", margin: 0, fontWeight: 500,
-            }}>
-              {msg.msg}
-            </p>
-          </div>
-
-          {/* Timestamp row */}
-          <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "14px", paddingLeft: "4px" }}>
-            <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#4ade80" }} />
-            <span style={{ fontSize: "11px", color: "#999", fontFamily: "'Lato', sans-serif" }}>Sent with love 💛 · Farewell 2025</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function MessageCard({ msg, onClick }) {
-  return (
-    <div
-      onClick={onClick}
-      style={{
-        background: "rgba(255,255,255,0.05)",
-        border: "1.5px solid rgba(255,255,255,0.1)",
-        borderRadius: "20px", padding: "20px", cursor: "pointer",
-        transition: "all 0.3s cubic-bezier(0.34,1.56,0.64,1)",
-        backdropFilter: "blur(10px)", position: "relative", overflow: "hidden",
-      }}
-      onMouseEnter={e => {
-        e.currentTarget.style.background = "rgba(255,255,255,0.1)";
-        e.currentTarget.style.transform = "translateY(-4px)";
-        e.currentTarget.style.boxShadow = `0 16px 48px ${msg.color}33`;
-        e.currentTarget.style.borderColor = msg.color + "88";
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.background = "rgba(255,255,255,0.05)";
-        e.currentTarget.style.transform = "translateY(0)";
-        e.currentTarget.style.boxShadow = "none";
-        e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
-      }}
-    >
-      <div style={{ position: "absolute", inset: 0, background: `radial-gradient(circle at top left, ${msg.color}10, transparent 65%)` }} />
-      <div style={{ display: "flex", alignItems: "center", gap: "14px", position: "relative" }}>
-        <div style={{
-          width: "48px", height: "48px", borderRadius: "50%",
-          background: `linear-gradient(135deg, ${msg.color}cc, ${msg.color}55)`,
-          border: `2px solid ${msg.color}`,
-          display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: "18px", fontWeight: 800, color: "#fff",
-          fontFamily: "'Playfair Display', serif", flexShrink: 0,
-        }}>
-          {msg.avatar}
-        </div>
-        <div style={{ flex: 1 }}>
-          <div style={{ color: "#fff", fontWeight: 700, fontSize: "16px", fontFamily: "'Playfair Display', serif" }}>{msg.name}</div>
-          <div style={{ color: msg.color, fontSize: "11px", fontWeight: 600, letterSpacing: "1.5px", textTransform: "uppercase", marginTop: "2px" }}>{msg.role}</div>
-        </div>
-        {/* Message preview icon */}
-        <div style={{
-          width: "32px", height: "32px", borderRadius: "50%",
-          background: `${msg.color}22`, border: `1px solid ${msg.color}55`,
-          display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: "14px", flexShrink: 0,
-        }}>💬</div>
-      </div>
-      <p style={{
-        color: "rgba(255,255,255,0.4)", fontSize: "12px", fontFamily: "'Lato', sans-serif",
-        marginTop: "12px", lineHeight: 1.5, position: "relative",
-        overflow: "hidden", display: "-webkit-box",
-        WebkitLineClamp: 2, WebkitBoxOrient: "vertical",
-      }}>
-        {msg.msg}
-      </p>
-      <div style={{ marginTop: "10px", position: "relative" }}>
-        <span style={{ fontSize: "11px", color: msg.color, fontWeight: 600, fontFamily: "'Lato', sans-serif" }}>
-          Tap to read full message →
-        </span>
-      </div>
-    </div>
-  );
-}
-
-function MessagesPage({ onBack }) {
-  const [current, setCurrent] = useState(0);
-  const [animDir, setAnimDir] = useState(null);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [selectedMsg, setSelectedMsg] = useState(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => { setTimeout(() => setVisible(true), 50); }, []);
-
-  const goTo = (idx, dir) => {
-    if (isAnimating) return;
-    setAnimDir(dir);
-    setIsAnimating(true);
-    setTimeout(() => { setCurrent(idx); setIsAnimating(false); setAnimDir(null); }, 350);
-  };
-
-  const prev = () => goTo((current - 1 + MESSAGES.length) % MESSAGES.length, "left");
-  const next = () => goTo((current + 1) % MESSAGES.length, "right");
-
-  const prevIdx = (current - 1 + MESSAGES.length) % MESSAGES.length;
-  const nextIdx = (current + 1) % MESSAGES.length;
-  const msg = MESSAGES[current];
-
-  return (
-    <div style={{
-      minHeight: "100vh", padding: "80px 24px 60px",
-      position: "relative", zIndex: 1, display: "flex", flexDirection: "column",
-      alignItems: "center", justifyContent: "center",
-      opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(24px)",
-      transition: "opacity 0.5s ease, transform 0.5s ease",
-    }}>
-      <BackButton onBack={onBack} />
-      {selectedMsg && <MessageModal msg={selectedMsg} onClose={() => setSelectedMsg(null)} />}
-
-      {/* Header */}
-      <div style={{ textAlign: "center", marginBottom: "36px" }}>
-        <p style={{ fontSize: "11px", letterSpacing: "4px", color: "#f472b6", textTransform: "uppercase", marginBottom: "10px" }}>
-          💌 Words From Your Team Members
-        </p>
-        <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(26px, 4vw, 44px)", fontWeight: 700, color: "#fff" }}>
-          With Love &{" "}
-          <span style={{ background: "linear-gradient(90deg, #f472b6, #818cf8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Gratitude</span>
-        </h2>
-      </div>
-
-      {/* Carousel */}
-      <div style={{ width: "100%", maxWidth: "860px" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "16px" }}>
-
-          {/* Prev thumbnail */}
-          <div onClick={prev} style={{
-            width: "70px", flexShrink: 0, cursor: "pointer",
-            opacity: 0.4, transition: "opacity 0.3s, transform 0.3s", transform: "scale(0.92)",
-          }}
-            onMouseEnter={e => { e.currentTarget.style.opacity = "0.7"; e.currentTarget.style.transform = "scale(0.96)"; }}
-            onMouseLeave={e => { e.currentTarget.style.opacity = "0.4"; e.currentTarget.style.transform = "scale(0.92)"; }}
-          >
-            <div style={{
-              background: "rgba(255,255,255,0.05)", border: `1.5px solid ${MESSAGES[prevIdx].color}55`,
-              borderRadius: "16px", padding: "14px 10px", textAlign: "center",
-            }}>
-              <div style={{
-                width: "36px", height: "36px", borderRadius: "50%", margin: "0 auto 6px",
-                background: `linear-gradient(135deg, ${MESSAGES[prevIdx].color}cc, ${MESSAGES[prevIdx].color}55)`,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: "14px", fontWeight: 800, color: "#fff",
-              }}>{MESSAGES[prevIdx].avatar}</div>
-              <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.6)", fontFamily: "'Lato', sans-serif", fontWeight: 600 }}>{MESSAGES[prevIdx].name}</div>
+              onMouseEnter={e => { if (i !== current) e.currentTarget.style.opacity = "0.8"; }}
+              onMouseLeave={e => { if (i !== current) e.currentTarget.style.opacity = "0.5"; }}>
+              <img src={p.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </div>
-          </div>
-
-          {/* Main card */}
-          <div style={{ flex: 1, maxWidth: "580px" }}>
-            <div style={{
-              transition: "opacity 0.35s ease, transform 0.35s ease",
-              opacity: isAnimating ? 0 : 1,
-              transform: isAnimating ? `translateX(${animDir === "right" ? "-40px" : "40px"})` : "translateX(0)",
-            }}>
-              <div style={{
-                background: "rgba(255,255,255,0.06)", border: `1.5px solid ${msg.color}66`,
-                borderRadius: "24px", overflow: "hidden",
-                boxShadow: `0 20px 60px ${msg.color}22`,
-              }}>
-                {/* Top color bar */}
-                <div style={{ height: "4px", background: `linear-gradient(90deg, ${msg.color}, ${msg.color}55)` }} />
-                <div style={{ padding: "28px 28px 24px" }}>
-                  {/* Avatar + info */}
-                  <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
-                    <div style={{
-                      width: "56px", height: "56px", borderRadius: "50%",
-                      background: `linear-gradient(135deg, ${msg.color}cc, ${msg.color}55)`,
-                      border: `2px solid ${msg.color}`,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: "22px", fontWeight: 800, color: "#fff",
-                      boxShadow: `0 0 20px ${msg.color}44`,
-                    }}>{msg.avatar}</div>
-                    <div>
-                      <div style={{ color: "#fff", fontWeight: 700, fontSize: "18px", fontFamily: "'Playfair Display', serif" }}>{msg.name}</div>
-                      <div style={{ color: msg.color, fontSize: "11px", fontWeight: 600, letterSpacing: "1.5px", textTransform: "uppercase", marginTop: "2px" }}>{msg.role}</div>
-                    </div>
-                    <div style={{ marginLeft: "auto" }}>
-                      <span style={{ fontSize: "28px", color: msg.color, fontFamily: "Georgia, serif", fontWeight: 900, opacity: 0.6 }}>"</span>
-                    </div>
-                  </div>
-                  {/* Message */}
-                  <p style={{
-                    color: "rgba(255,255,255,0.85)", fontSize: "15px", lineHeight: 1.8,
-                    fontFamily: "'Lato', sans-serif", margin: "0 0 20px",
-                    borderLeft: `3px solid ${msg.color}55`, paddingLeft: "16px",
-                  }}>{msg.msg}</p>
-                  {/* Read full button */}
-                  <button onClick={() => setSelectedMsg(msg)} style={{
-                    padding: "9px 20px", borderRadius: "999px",
-                    background: `${msg.color}22`, border: `1px solid ${msg.color}55`,
-                    color: msg.color, fontSize: "12px", fontWeight: 700,
-                    cursor: "pointer", fontFamily: "'Lato', sans-serif",
-                    transition: "background 0.2s",
-                  }}
-                    onMouseEnter={e => e.currentTarget.style.background = `${msg.color}44`}
-                    onMouseLeave={e => e.currentTarget.style.background = `${msg.color}22`}
-                  >
-                    💬 Open as Message
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Next thumbnail */}
-          <div onClick={next} style={{
-            width: "70px", flexShrink: 0, cursor: "pointer",
-            opacity: 0.4, transition: "opacity 0.3s, transform 0.3s", transform: "scale(0.92)",
-          }}
-            onMouseEnter={e => { e.currentTarget.style.opacity = "0.7"; e.currentTarget.style.transform = "scale(0.96)"; }}
-            onMouseLeave={e => { e.currentTarget.style.opacity = "0.4"; e.currentTarget.style.transform = "scale(0.92)"; }}
-          >
-            <div style={{
-              background: "rgba(255,255,255,0.05)", border: `1.5px solid ${MESSAGES[nextIdx].color}55`,
-              borderRadius: "16px", padding: "14px 10px", textAlign: "center",
-            }}>
-              <div style={{
-                width: "36px", height: "36px", borderRadius: "50%", margin: "0 auto 6px",
-                background: `linear-gradient(135deg, ${MESSAGES[nextIdx].color}cc, ${MESSAGES[nextIdx].color}55)`,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: "14px", fontWeight: 800, color: "#fff",
-              }}>{MESSAGES[nextIdx].avatar}</div>
-              <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.6)", fontFamily: "'Lato', sans-serif", fontWeight: 600 }}>{MESSAGES[nextIdx].name}</div>
-            </div>
-          </div>
+          ))}
         </div>
-
-        {/* Controls */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "14px", marginTop: "24px" }}>
-          <button onClick={prev} style={{ width: "40px", height: "40px", borderRadius: "50%", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", fontSize: "16px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s" }}
-            onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.15)"}
-            onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.07)"}>←</button>
-          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-            {MESSAGES.map((m, i) => (
-              <button key={i} onClick={() => goTo(i, i > current ? "right" : "left")} style={{
-                width: i === current ? "24px" : "8px", height: "8px", borderRadius: "999px",
-                background: i === current ? MESSAGES[current].color : "rgba(255,255,255,0.25)",
-                border: "none", cursor: "pointer", padding: 0, transition: "all 0.3s ease",
-              }} />
-            ))}
-          </div>
-          <button onClick={next} style={{ width: "40px", height: "40px", borderRadius: "50%", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", fontSize: "16px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s" }}
-            onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.15)"}
-            onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.07)"}>→</button>
-        </div>
-        <p style={{ textAlign: "center", marginTop: "10px", color: "rgba(255,255,255,0.3)", fontSize: "12px", letterSpacing: "1px" }}>
-          {current + 1} / {MESSAGES.length}
-        </p>
       </div>
     </div>
   );
@@ -735,47 +483,24 @@ function HomePage({ onNavigate }) {
           </p>
         </div>
 
-        {/* Nav buttons — side by side, compact */}
-        <div style={{ animation: "fadeSlideUp 0.8s 0.6s both", display: "flex", gap: "16px", flexWrap: "wrap", justifyContent: "center", marginBottom: "20px" }}>
-          {/* Memories button */}
+        {/* Nav button */}
+        <div style={{ animation: "fadeSlideUp 0.8s 0.6s both", display: "flex", justifyContent: "center", marginBottom: "20px" }}>
           <button onClick={() => onNavigate("memories")} style={{
             display: "flex", alignItems: "center", gap: "14px",
-            padding: "14px 28px", borderRadius: "14px",
-            background: "linear-gradient(135deg, #1e3a5f, #1a2a4a)",
-            border: "1.5px solid rgba(96,165,250,0.4)",
+            padding: "14px 32px", borderRadius: "14px",
+            background: "linear-gradient(135deg, #1e3a5f, #3d1a3a)",
+            border: "1.5px solid rgba(129,140,248,0.5)",
             color: "#fff", fontWeight: 700, fontSize: "14px",
             cursor: "pointer", fontFamily: "'Lato', sans-serif",
-            boxShadow: "0 8px 24px rgba(96,165,250,0.2)",
-            transition: "transform 0.25s, box-shadow 0.25s, border-color 0.25s",
-            minWidth: "190px", textAlign: "left",
+            boxShadow: "0 8px 24px rgba(129,140,248,0.25)",
+            transition: "transform 0.25s, box-shadow 0.25s",
           }}
-            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 14px 40px rgba(96,165,250,0.35)"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.8)"; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(96,165,250,0.2)"; e.currentTarget.style.borderColor = "rgba(96,165,250,0.4)"; }}>
-            <div style={{ fontSize: "26px", flexShrink: 0 }}>📸</div>
+            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 14px 40px rgba(129,140,248,0.4)"; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(129,140,248,0.25)"; }}>
+            <div style={{ fontSize: "26px" }}>📸</div>
             <div>
-              <div style={{ fontSize: "14px", fontWeight: 700 }}>Our Memories</div>
-              <div style={{ fontSize: "11px", color: "#60a5fa", marginTop: "2px", fontWeight: 400 }}>Photos & moments</div>
-            </div>
-          </button>
-
-          {/* Messages button */}
-          <button onClick={() => onNavigate("messages")} style={{
-            display: "flex", alignItems: "center", gap: "14px",
-            padding: "14px 28px", borderRadius: "14px",
-            background: "linear-gradient(135deg, #3d1a3a, #2a1230)",
-            border: "1.5px solid rgba(244,114,182,0.4)",
-            color: "#fff", fontWeight: 700, fontSize: "14px",
-            cursor: "pointer", fontFamily: "'Lato', sans-serif",
-            boxShadow: "0 8px 24px rgba(244,114,182,0.2)",
-            transition: "transform 0.25s, box-shadow 0.25s, border-color 0.25s",
-            minWidth: "190px", textAlign: "left",
-          }}
-            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 14px 40px rgba(244,114,182,0.35)"; e.currentTarget.style.borderColor = "rgba(244,114,182,0.8)"; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(244,114,182,0.2)"; e.currentTarget.style.borderColor = "rgba(244,114,182,0.4)"; }}>
-            <div style={{ fontSize: "26px", flexShrink: 0 }}>💌</div>
-            <div>
-              <div style={{ fontSize: "14px", fontWeight: 700 }}>Team Messages</div>
-              <div style={{ fontSize: "11px", color: "#f472b6", marginTop: "2px", fontWeight: 400 }}>Words from the heart</div>
+              <div style={{ fontSize: "14px", fontWeight: 700 }}>Memories & Messages</div>
+              <div style={{ fontSize: "11px", color: "#a5b4fc", marginTop: "2px", fontWeight: 400 }}>Photos · Moments · Words from the heart 💌</div>
             </div>
           </button>
         </div>
@@ -866,7 +591,6 @@ export default function FarewellApp() {
       <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #0d0d1a 0%, #1a0d2e 40%, #0d1a2e 100%)", color: "#fff", fontFamily: "'Lato', sans-serif", position: "relative" }}>
         {page === "home"      && <HomePage      onNavigate={setPage} />}
         {page === "memories"  && <MemoriesPage  onBack={() => setPage("home")} />}
-        {page === "messages"  && <MessagesPage  onBack={() => setPage("home")} />}
       </div>
     </>
   );
