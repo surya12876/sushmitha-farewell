@@ -1,20 +1,20 @@
 import { useState, useEffect, useRef } from "react";
 
 const MESSAGES = [
-  { name: "Surya",  msg: "Working alongside you has been the highlight of my career so far. You always had the perfect solution — and somehow made it look effortless. I'll miss our late-night debug sessions! 💛", color: "#f59e0b", avatar: "A" },
-  { name: "Gowtham",  msg: "You were the only dev who never said 'that's not possible in CSS'. You brought every single design to life with such care. The team won't be the same without you! 🌸", color: "#f472b6", avatar: "P" },
-  { name: "Ganesh",  msg: "I barely understand what you do but I know it's pure magic. Every screen you touched became a masterpiece. Wishing you the best on your new journey, legend! 🚀", color: "#10b981", avatar: "R" },
-  { name: "Tejaswini",  msg: "You were the one developer who actually loved when I raised bugs — and fixed them faster than I could log them! You set the bar for quality. We'll miss you so much! ⭐", color: "#818cf8", avatar: "S" },
-  { name: "nitin", msg: "You've mentored, inspired and uplifted everyone around you. You didn't just write great code — you built a great team culture. Wherever you go, they're getting the best. 🏆", color: "#fb923c", avatar: "K" },
+  { name: "Nitin", msg: "You've mentored, inspired and uplifted everyone around you. You didn't just write great code — you built a great team culture. Wherever you go, they're getting the best. 🏆", color: "#fb923c", avatar: "N" },
+  { name: "Surya",  msg: "Working alongside you has been the highlight of my career so far. You always had the perfect solution — and somehow made it look effortless. I'll miss our late-night debug sessions! 💛", color: "#f59e0b", avatar: "S" },
+  { name: "Gowtham",  msg: "You were the only dev who never said 'that's not possible in CSS'. You brought every single design to life with such care. The team won't be the same without you! 🌸", color: "#f472b6", avatar: "D" },
+  { name: "Ganesh",  msg: "I just wanted to say it was really great working with you. You made frontend look effortless, and I always appreciated how patient and helpful you were whenever we needed something from your side.All the best for your new journey", color: "#10b981", avatar: "G" },
+  { name: "Tejaswini",  msg: "Hii Sushmitha, Working with you has been a great learning experience. Your ability to turn ideas into beautiful Ul has inspired me and the team. All the very best for your future endeavors!", color: "#818cf8", avatar: "T" },
   // { name: "",  msg: "From pair programming to coffee chats — every moment working with you was a learning experience. Your passion for clean, accessible UI is something I'll carry forward forever. 💻", color: "#34d399", avatar: "M" },
 ];
 
 const PHOTOS = [
-  { id: 1, url: "images/picatrjp.png", caption:"first team pic", tag: "first team pic" },
-  { id: 2, url: "images/pic_at_ch.png", caption: "at charminar", tag: "Fun Times" },
-  { id: 3, url: "images/image1.png", caption: "Sprint Planning Sessions ☕", tag: "Work Hard" },
-  { id: 4, url: "images/image2.jpeg", caption: "Annual Team Outing 🎉", tag: "Play Hard" },
-  { id: 5, url: "images/image3.jpeg", caption: "Office Celebrations 🎂", tag: "Together" },
+  { id: 1, url: "images/nitin_img.jpeg" },
+  { id: 2, url: "images/surya_img.jpeg" },
+  { id: 3, url: "images/gowtham_img.jpeg" },
+  { id: 4, url: "images/ganesh_img.jpeg" },
+  { id: 5, url: "images/tejaswini_img.jpeg" },
  
 ];
 
