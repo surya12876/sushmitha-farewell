@@ -344,12 +344,12 @@ const CATCHPHRASES = [
 const SURROUNDING_IMAGES = [
   // LEFT column
   { url: "images/group_image1.jpeg", top: "2%",  left: "16%", size: 200, rotate: -6 },
-  { url: "images/group_image5.jpeg", top: "35%", left: "15%", size: 188, rotate: -4 },
+  { url: "images/group_image5.jpeg", top: "35%", left: "12%", size: 188, rotate: -4 },
   { url: "images/group_image3.jpeg", top: "68%", left: "16%", size: 188, rotate: -8 },
   // RIGHT column — pushed further right
-  { url: "images/group_image2.jpeg", top: "2%",  left: "72%", size: 185, rotate: 5  },
-  { url: "images/picatrjp.png",      top: "35%", left: "73%", size: 200, rotate: 6  },
-  { url: "images/group_image4.jpeg", top: "68%", left: "72%", size: 186, rotate: 7  },
+  { url: "images/group_image2.jpeg", top: "2%",  left: "65%", size: 185, rotate: 5  },
+  { url: "images/picatrjp.png",      top: "35%", left: "70%", size: 200, rotate: 6  },
+  { url: "images/group_image4.jpeg", top: "68%", left: "66%", size: 186, rotate: 7  },
 ];
 
 function FinalPage({ onBack }) {
@@ -395,7 +395,7 @@ function FinalPage({ onBack }) {
       {/* Central message card */}
       <div style={{
         position: "relative", zIndex: 5,
-        maxWidth: "420px", textAlign: "center",
+        maxWidth: "340px", textAlign: "center",
         animation: "fadeSlideUp 0.8s 0.3s both",
       }}>
         {/* Glow ring */}
@@ -410,11 +410,9 @@ function FinalPage({ onBack }) {
         </p>
 
         <div style={{
-          background: "rgba(255,255,255,0.06)",
-          border: "1px solid rgba(255,255,255,0.12)",
-          borderRadius: "28px", padding: "36px 32px",
-          backdropFilter: "blur(20px)",
-          boxShadow: "0 32px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(244,114,182,0.15)",
+          background: "transparent",
+          border: "none",
+          padding: "20px 24px",
         }}>
           <div style={{ fontSize: "48px", marginBottom: "16px" }}>👩‍💻</div>
 
@@ -434,9 +432,8 @@ function FinalPage({ onBack }) {
             fontFamily: "'Playfair Display', serif", fontStyle: "italic",
             lineHeight: 1.8, marginBottom: "24px",
           }}>
-            You didn't just write beautiful code — you made this team a better place to be.
-            Every bug you fixed, every pixel you perfected, every laugh you brought to our standups…
-            we'll carry it all with us. 🌸
+           Wishing you  success, happiness, and exciting new adventures ahead..
+You will always be a valued part of our team story — we’ll truly miss you.
           </p>
 
           <div style={{ display: "flex", justifyContent: "center", gap: "6px", flexWrap: "wrap", marginBottom: "20px" }}>
@@ -556,7 +553,7 @@ function CatchphrasesPage({ onBack, onNext }) {
 // ── PAGE: Home ─────────────────────────────────────────────────────────────
 
 function HomePage({ onNavigate }) {
-  const [confetti, setConfetti] = useState(false);
+  const [confetti, setConfetti] = useState(true);
   const [typed, setTyped] = useState("");
   const [visible, setVisible] = useState(false);
   const fullText = "Thank you for everything you've built, taught, and inspired. 🌸";
