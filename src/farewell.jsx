@@ -2,11 +2,11 @@ import { useState, useEffect, useRef } from "react";
 
 const MESSAGES = [
   { name: "Nitin", msg: "Sushmitha has been a valuable part of our team, contributing greatly in Aws, QuickSight and Ul. Coming from Hyderabad, she blended well with the team and even spoke Hindi comfortably. Her kind nature and quick learning ability made working with her a pleasure. Wishing her all the very best for the future.", color: "#fb923c", avatar: "N" },
-  { name: "Surya",  msg: "Working alongside you has been the highlight of my career so far. You always had the perfect solution — and somehow made it look effortless. I'll miss our late-night debug sessions! 💛", color: "#f59e0b", avatar: "S" },
-  { name: "Gowtham",  msg: "You were the only dev who never said 'that's not possible in CSS'. You brought every single design to life with such care. The team won't be the same without you! 🌸", color: "#f472b6", avatar: "D" },
+  { name: "Surya",  msg: "Working alongside you has been the highlight of my career so far. You always had the perfect Explanation — and somehow made it look effortless. ", color: "#f59e0b", avatar: "S" },
+  { name: "Gowtham",  msg: "Your ability to quickly understand the backend and connect it seamlessly with the UI is impressive. You communicate clearly and confidently in demos. It’s been great working with someone who is sharp, a great listener, and has a wonderful personality.", color: "#f472b6", avatar: "D" },
   { name: "Ganesh",  msg: "I just wanted to say it was really great working with you. You made frontend look effortless, and I always appreciated how patient and helpful you were whenever we needed something from your side.All the best for your new journey", color: "#10b981", avatar: "G" },
   { name: "Tejaswini",  msg: "Hii Sushmitha, Working with you has been a great learning experience. Your ability to turn ideas into beautiful Ul has inspired me and the team. All the very best for your future endeavors!", color: "#818cf8", avatar: "T" },
-  // { name: "",  msg: "From pair programming to coffee chats — every moment working with you was a learning experience. Your passion for clean, accessible UI is something I'll carry forward forever. 💻", color: "#34d399", avatar: "M" },
+  // { name: "manish",  color: "#34d399", avatar: "M" },
 ];
 
 const PHOTOS = [
@@ -15,6 +15,7 @@ const PHOTOS = [
   { id: 3, url: "images/gowtham_img.jpeg" },
   { id: 4, url: "images/ganesh_img.jpeg" },
   { id: 5, url: "images/tejaswini_img.jpeg" },
+  // {id:6,url :""},
  
 ];
 
@@ -338,7 +339,126 @@ const CATCHPHRASES = [
   },
 ];
 
-function CatchphrasesPage({ onBack }) {
+// ── PAGE: Final Message ────────────────────────────────────────────────────
+
+const SURROUNDING_IMAGES = [
+  // LEFT column
+  { url: "images/group_image1.jpeg", top: "2%",  left: "16%", size: 200, rotate: -6 },
+  { url: "images/group_image5.jpeg", top: "35%", left: "15%", size: 188, rotate: -4 },
+  { url: "images/group_image3.jpeg", top: "68%", left: "16%", size: 188, rotate: -8 },
+  // RIGHT column — pushed further right
+  { url: "images/group_image2.jpeg", top: "2%",  left: "72%", size: 185, rotate: 5  },
+  { url: "images/picatrjp.png",      top: "35%", left: "73%", size: 200, rotate: 6  },
+  { url: "images/group_image4.jpeg", top: "68%", left: "72%", size: 186, rotate: 7  },
+];
+
+function FinalPage({ onBack }) {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => { setTimeout(() => setVisible(true), 80); }, []);
+
+  return (
+    <div style={{
+      minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
+      position: "relative", zIndex: 1, overflow: "hidden",
+      opacity: visible ? 1 : 0, transition: "opacity 0.7s ease",
+    }}>
+      <BackButton onBack={onBack} />
+
+      {/* Scattered images */}
+      {SURROUNDING_IMAGES.map((img, i) => (
+        <div key={i} style={{
+          position: "absolute",
+          top: img.top, left: img.left,
+          width: `${img.size}px`, height: `${img.size}px`,
+          borderRadius: "16px", overflow: "hidden",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.5), 0 0 0 3px rgba(255,255,255,0.08)",
+          animation: `fadeSlideUp 0.6s ${i * 0.1}s both`,
+          transform: `rotate(${img.rotate}deg)`,
+          transition: "transform 0.3s ease, box-shadow 0.3s ease",
+          cursor: "default", zIndex: 2,
+        }}
+          onMouseEnter={e => { e.currentTarget.style.transform = `rotate(0deg) scale(1.1)`; e.currentTarget.style.zIndex = "10"; e.currentTarget.style.boxShadow = "0 16px 48px rgba(0,0,0,0.6), 0 0 0 3px rgba(244,114,182,0.4)"; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = `rotate(${img.rotate}deg) scale(1)`; e.currentTarget.style.zIndex = "2"; e.currentTarget.style.boxShadow = "0 8px 32px rgba(0,0,0,0.5), 0 0 0 3px rgba(255,255,255,0.08)"; }}
+        >
+          <img src={img.url} alt={img.label} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <div style={{
+            position: "absolute", bottom: 0, left: 0, right: 0,
+            background: "linear-gradient(to top, rgba(0,0,0,0.75), transparent)",
+            padding: "8px 6px 4px",
+            fontSize: "9px", color: "rgba(255,255,255,0.9)",
+            fontFamily: "'Lato', sans-serif", fontWeight: 700,
+            textAlign: "center", letterSpacing: "0.5px", textTransform: "uppercase",
+          }}>{img.label}</div>
+        </div>
+      ))}
+
+      {/* Central message card */}
+      <div style={{
+        position: "relative", zIndex: 5,
+        maxWidth: "420px", textAlign: "center",
+        animation: "fadeSlideUp 0.8s 0.3s both",
+      }}>
+        {/* Glow ring */}
+        <div style={{
+          position: "absolute", inset: "-40px", borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(244,114,182,0.15) 0%, rgba(129,140,248,0.1) 50%, transparent 70%)",
+          pointerEvents: "none",
+        }} />
+
+        <p style={{ fontSize: "11px", letterSpacing: "4px", color: "#f472b6", textTransform: "uppercase", marginBottom: "16px", fontFamily: "'Lato', sans-serif" }}>
+          💛 From All of Us
+        </p>
+
+        <div style={{
+          background: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.12)",
+          borderRadius: "28px", padding: "36px 32px",
+          backdropFilter: "blur(20px)",
+          boxShadow: "0 32px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(244,114,182,0.15)",
+        }}>
+          <div style={{ fontSize: "48px", marginBottom: "16px" }}>👩‍💻</div>
+
+          <h2 style={{
+            fontFamily: "'Playfair Display', serif",
+            fontSize: "clamp(22px, 3.5vw, 36px)", fontWeight: 900,
+            color: "#fff", lineHeight: 1.2, marginBottom: "20px",
+          }}>
+            Goodbye,{" "}
+            <span style={{ background: "linear-gradient(90deg, #fbbf24, #f472b6, #818cf8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              Sushmitha!
+            </span>
+          </h2>
+
+          <p style={{
+            fontSize: "15px", color: "rgba(255,255,255,0.78)",
+            fontFamily: "'Playfair Display', serif", fontStyle: "italic",
+            lineHeight: 1.8, marginBottom: "24px",
+          }}>
+            You didn't just write beautiful code — you made this team a better place to be.
+            Every bug you fixed, every pixel you perfected, every laugh you brought to our standups…
+            we'll carry it all with us. 🌸
+          </p>
+
+          <div style={{ display: "flex", justifyContent: "center", gap: "6px", flexWrap: "wrap", marginBottom: "20px" }}>
+            {["✨ Always", "💛 Missed", "🚀 Legend", "🌸 Forever"].map((tag, i) => (
+              <span key={i} style={{
+                padding: "4px 14px", borderRadius: "999px",
+                background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)",
+                fontSize: "12px", color: "rgba(255,255,255,0.6)", fontFamily: "'Lato', sans-serif",
+              }}>{tag}</span>
+            ))}
+          </div>
+
+          <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.3)", fontFamily: "'Lato', sans-serif", letterSpacing: "1px" }}>
+            Made with ❤️ by your entire team · 2025
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CatchphrasesPage({ onBack, onNext }) {
   const [visible, setVisible] = useState(false);
   useEffect(() => { setTimeout(() => setVisible(true), 50); }, []);
 
@@ -385,13 +505,11 @@ function CatchphrasesPage({ onBack }) {
             position: "relative",
             overflow: "hidden",
           }}>
-            {/* Big quote mark background */}
             <span style={{
               position: "absolute", top: "-10px", right: "16px",
               fontSize: "80px", color: b.senderColor, opacity: 0.08,
               fontFamily: "Georgia, serif", fontWeight: 900, lineHeight: 1, pointerEvents: "none",
             }}>"</span>
-            {/* Opening quote */}
             <span style={{
               fontSize: "22px", color: b.senderColor, fontFamily: "Georgia, serif",
               fontWeight: 900, display: "block", marginBottom: "8px", opacity: 0.7,
@@ -411,6 +529,25 @@ function CatchphrasesPage({ onBack }) {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Next button */}
+      <div style={{ marginTop: "44px", animation: "fadeSlideUp 0.6s 0.7s both" }}>
+        <button onClick={onNext} style={{
+          display: "flex", alignItems: "center", gap: "12px",
+          padding: "16px 36px", borderRadius: "999px",
+          background: "linear-gradient(135deg, #f472b6, #818cf8)",
+          border: "none", color: "#fff", fontWeight: 700, fontSize: "15px",
+          cursor: "pointer", fontFamily: "'Lato', sans-serif",
+          boxShadow: "0 8px 32px rgba(244,114,182,0.4)",
+          transition: "transform 0.25s, box-shadow 0.25s",
+        }}
+          onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px) scale(1.03)"; e.currentTarget.style.boxShadow = "0 16px 48px rgba(244,114,182,0.5)"; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0) scale(1)"; e.currentTarget.style.boxShadow = "0 8px 32px rgba(244,114,182,0.4)"; }}
+        >
+          <span>💌 See the Final Message</span>
+          <span style={{ fontSize: "18px" }}>→</span>
+        </button>
       </div>
     </div>
   );
@@ -526,11 +663,11 @@ function HomePage({ onNavigate }) {
 
         {/* Confetti button */}
         <div style={{ animation: "fadeSlideUp 0.8s 0.8s both" }}>
-          <button onClick={fireConfetti} style={{ padding: "10px 24px", borderRadius: "999px", background: "rgba(255,255,255,0.07)", color: "#fff", fontWeight: 600, fontSize: "13px", border: "1px solid rgba(255,255,255,0.15)", cursor: "pointer", fontFamily: "'Lato', sans-serif", transition: "background 0.2s" }}
+          {/* <button onClick={fireConfetti} style={{ padding: "10px 24px", borderRadius: "999px", background: "rgba(255,255,255,0.07)", color: "#fff", fontWeight: 600, fontSize: "13px", border: "1px solid rgba(255,255,255,0.15)", cursor: "pointer", fontFamily: "'Lato', sans-serif", transition: "background 0.2s" }}
             onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.13)"}
             onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.07)"}>
             🎉 Celebrate Her!
-          </button>
+          </button> */}
         </div>
 
         {/* Footer */}
@@ -610,7 +747,8 @@ export default function FarewellApp() {
       <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #0d0d1a 0%, #1a0d2e 40%, #0d1a2e 100%)", color: "#fff", fontFamily: "'Lato', sans-serif", position: "relative" }}>
         {page === "home"         && <HomePage         onNavigate={setPage} />}
         {page === "memories"     && <MemoriesPage     onBack={() => setPage("home")} />}
-        {page === "catchphrases" && <CatchphrasesPage  onBack={() => setPage("home")} />}
+        {page === "catchphrases" && <CatchphrasesPage  onBack={() => setPage("home")} onNext={() => setPage("final")} />}
+        {page === "final"        && <FinalPage         onBack={() => setPage("catchphrases")} />}
       </div>
     </>
   );
