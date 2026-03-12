@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 
 const MESSAGES = [
   { name: "Nitin", msg: "Sushmitha has been a valuable part of our team, contributing greatly in Aws, QuickSight and Ul. Coming from Hyderabad, she blended well with the team and even spoke Hindi comfortably. Her kind nature and quick learning ability made working with her a pleasure. Wishing her all the very best for the future.", color: "#fb923c", avatar: "N" },
-  { name: "Surya",  msg: "Working alongside you has been the highlight of my career so far. You always had the perfect Explanation — and somehow made it look effortless. ", color: "#f59e0b", avatar: "S" },
+  { name: "Surya",  msg: "Working alongside you has been the highlight of my career so far. You always had the perfect Explanation — and somehow made it look effortless.I have learnt a lot from you in such a short time and I really appreciate your guidance and support ", color: "#f59e0b", avatar: "S" },
   { name: "Gowtham",  msg: "Your ability to quickly understand the backend and connect it seamlessly with the UI is impressive. You communicate clearly and confidently in demos. It’s been great working with someone who is sharp, a great listener, and has a wonderful personality.", color: "#f472b6", avatar: "D" },
   { name: "Ganesh",  msg: "I just wanted to say it was really great working with you. You made frontend look effortless, and I always appreciated how patient and helpful you were whenever we needed something from your side.All the best for your new journey", color: "#10b981", avatar: "G" },
   { name: "Tejaswini",  msg: "Hii Sushmitha, Working with you has been a great learning experience. Your ability to turn ideas into beautiful Ul has inspired me and the team. All the very best for your future endeavors!", color: "#818cf8", avatar: "T" },
@@ -414,7 +414,7 @@ function FinalPage({ onBack }) {
           border: "none",
           padding: "20px 24px",
         }}>
-          <div style={{ fontSize: "48px", marginBottom: "16px" }}>👩‍💻</div>
+          {/* <div style={{ fontSize: "48px", marginBottom: "16px" }}>👩‍💻</div> */}
 
           <h2 style={{
             fontFamily: "'Playfair Display', serif",
@@ -428,15 +428,17 @@ function FinalPage({ onBack }) {
           </h2>
 
           <p style={{
-            fontSize: "15px", color: "rgba(255,255,255,0.78)",
+            fontSize: "20px", color: "rgba(255,255,255,0.78)",
             fontFamily: "'Playfair Display', serif", fontStyle: "italic",
-            lineHeight: 1.8, marginBottom: "24px",
+            lineHeight: 1.8, marginBottom: "28px",
           }}>
-           Wishing you  success, happiness, and exciting new adventures ahead..
-You will always be a valued part of our team story — we’ll truly miss you.
+          May your next chapter bring even greater achievements and opportunities.
+          Keep shining and making a difference wherever you go.
+          You will always be a valued part of our team story 
+          — we’ll truly miss you
           </p>
 
-          <div style={{ display: "flex", justifyContent: "center", gap: "6px", flexWrap: "wrap", marginBottom: "20px" }}>
+          {/* <div style={{ display: "flex", justifyContent: "center", gap: "6px", flexWrap: "wrap", marginBottom: "20px" }}>
             {["✨ Always", "💛 Missed", "🚀 Legend", "🌸 Forever"].map((tag, i) => (
               <span key={i} style={{
                 padding: "4px 14px", borderRadius: "999px",
@@ -444,11 +446,11 @@ You will always be a valued part of our team story — we’ll truly miss you.
                 fontSize: "12px", color: "rgba(255,255,255,0.6)", fontFamily: "'Lato', sans-serif",
               }}>{tag}</span>
             ))}
-          </div>
+          </div> */}
 
-          <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.3)", fontFamily: "'Lato', sans-serif", letterSpacing: "1px" }}>
+          {/* <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.3)", fontFamily: "'Lato', sans-serif", letterSpacing: "1px" }}>
             Made with ❤️ by your entire team · 2025
-          </p>
+          </p> */}
         </div>
       </div>
     </div>
