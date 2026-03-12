@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 const MESSAGES = [
-  { name: "Nitin", msg: "You've mentored, inspired and uplifted everyone around you. You didn't just write great code — you built a great team culture. Wherever you go, they're getting the best. 🏆", color: "#fb923c", avatar: "N" },
+  { name: "Nitin", msg: "Sushmitha has been a valuable part of our team, contributing greatly in Aws, QuickSight and Ul. Coming from Hyderabad, she blended well with the team and even spoke Hindi comfortably. Her kind nature and quick learning ability made working with her a pleasure. Wishing her all the very best for the future.", color: "#fb923c", avatar: "N" },
   { name: "Surya",  msg: "Working alongside you has been the highlight of my career so far. You always had the perfect solution — and somehow made it look effortless. I'll miss our late-night debug sessions! 💛", color: "#f59e0b", avatar: "S" },
   { name: "Gowtham",  msg: "You were the only dev who never said 'that's not possible in CSS'. You brought every single design to life with such care. The team won't be the same without you! 🌸", color: "#f472b6", avatar: "D" },
   { name: "Ganesh",  msg: "I just wanted to say it was really great working with you. You made frontend look effortless, and I always appreciated how patient and helpful you were whenever we needed something from your side.All the best for your new journey", color: "#10b981", avatar: "G" },
@@ -299,120 +299,120 @@ transition: "opacity 0.3s ease",
 
 // ── Floating Chat Bubbles ──────────────────────────────────────────────────
 
-const SCATTERED_BUBBLES = [
-  // top-left
+const CATCHPHRASES = [
   {
     text: "Is the backend running? 🔌",
-    sender: "Sushmitha",
     bg: "linear-gradient(135deg, #e0e7ff, #eef2ff)",
-    border: "rgba(129,140,248,0.35)",
-    accentColor: "#4f46e5",
-    textColor: "#1e1b4b",
-    senderColor: "#6366f1",
+    border: "rgba(129,140,248,0.35)", textColor: "#1e1b4b", senderColor: "#6366f1",
     shadow: "0 8px 32px rgba(99,102,241,0.2)",
-    style: { top: "8%", left: "3%", animation: "floatBobLeft 3.2s ease-in-out infinite" },
-    delay: 400,
   },
-  // mid-left
   {
     text: "Is the VM running Surya? 💻",
-    sender: "Sushmitha",
     bg: "linear-gradient(135deg, #d1fae5, #ecfdf5)",
-    border: "rgba(52,211,153,0.35)",
-    accentColor: "#065f46",
-    textColor: "#064e3b",
-    senderColor: "#059669",
+    border: "rgba(52,211,153,0.35)", textColor: "#064e3b", senderColor: "#059669",
     shadow: "0 8px 32px rgba(52,211,153,0.2)",
-    style: { top: "44%", left: "1%", animation: "floatBobLeft 2.8s 0.4s ease-in-out infinite" },
-    delay: 900,
   },
-  // top-right
   {
     text: "Is my screen visible? 🖥️",
-    sender: "Sushmitha",
     bg: "linear-gradient(135deg, #fce7f3, #fdf2f8)",
-    border: "rgba(244,114,182,0.35)",
-    accentColor: "#9d174d",
-    textColor: "#831843",
-    senderColor: "#db2777",
+    border: "rgba(244,114,182,0.35)", textColor: "#831843", senderColor: "#db2777",
     shadow: "0 8px 32px rgba(244,114,182,0.2)",
-    style: { top: "8%", right: "3%", animation: "floatBobRight 3.5s ease-in-out infinite" },
-    delay: 700,
   },
-  // mid-right
   {
     text: "I am not able to connect the VM 😭",
-    sender: "Sushmitha",
     bg: "linear-gradient(135deg, #fef3c7, #fffbeb)",
-    border: "rgba(251,191,36,0.4)",
-    accentColor: "#92400e",
-    textColor: "#78350f",
-    senderColor: "#d97706",
+    border: "rgba(251,191,36,0.4)", textColor: "#78350f", senderColor: "#d97706",
     shadow: "0 8px 32px rgba(251,191,36,0.2)",
-    style: { top: "44%", right: "1%", animation: "floatBobRight 3s 0.6s ease-in-out infinite" },
-    delay: 1200,
+  },
+  {
+    text: "Can we connect once? 📞",
+    bg: "linear-gradient(135deg, #ffe4e6, #fff1f2)",
+    border: "rgba(251,113,133,0.35)", textColor: "#881337", senderColor: "#e11d48",
+    shadow: "0 8px 32px rgba(251,113,133,0.2)",
+  },
+  {
+    text: "I am getting 500 error 🚨",
+    bg: "linear-gradient(135deg, #ffedd5, #fff7ed)",
+    border: "rgba(249,115,22,0.35)", textColor: "#7c2d12", senderColor: "#ea580c",
+    shadow: "0 8px 32px rgba(249,115,22,0.2)",
   },
 ];
 
-function ScatteredBubble({ bubble, visible }) {
+function CatchphrasesPage({ onBack }) {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => { setTimeout(() => setVisible(true), 50); }, []);
+
   return (
     <div style={{
-      position: "absolute",
-      ...bubble.style,
-      zIndex: 2,
-      width: "220px",
-      opacity: visible ? 1 : 0,
-      transform: visible ? "scale(1) translateY(0)" : "scale(0.9) translateY(12px)",
-      transition: "opacity 0.6s ease, transform 0.6s cubic-bezier(0.34,1.56,0.64,1)",
+      minHeight: "100vh", display: "flex", flexDirection: "column",
+      alignItems: "center", justifyContent: "center",
+      padding: "80px 32px 48px", position: "relative", zIndex: 1,
+      opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(24px)",
+      transition: "opacity 0.5s ease, transform 0.5s ease",
     }}>
-      <div style={{
-        background: bubble.bg,
-        borderRadius: "16px",
-        padding: "16px 18px",
-        boxShadow: bubble.shadow,
-        border: `1.5px solid ${bubble.border}`,
-      }}>
-        {/* Phrase text */}
-        <p style={{
-          fontSize: "14px", color: bubble.textColor, fontFamily: "'Playfair Display', serif",
-          lineHeight: 1.55, margin: "0 0 12px", fontWeight: 700, fontStyle: "italic",
-        }}>
-          "{bubble.text}"
+      <BackButton onBack={onBack} />
+
+      {/* Heading */}
+      <div style={{ textAlign: "center", marginBottom: "48px" }}>
+        <p style={{ fontSize: "11px", letterSpacing: "4px", color: "#f472b6", textTransform: "uppercase", marginBottom: "12px", fontFamily: "'Lato', sans-serif" }}>
+          💬 Signature Lines
         </p>
-        {/* Divider */}
-        <div style={{ height: "1px", background: bubble.border, marginBottom: "10px" }} />
-        {/* Sender */}
-        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-          <div style={{
-            width: "6px", height: "6px", borderRadius: "50%",
-            background: bubble.senderColor, flexShrink: 0,
-          }} />
-          <span style={{
-            fontSize: "11px", color: bubble.senderColor,
-            fontWeight: 700, fontFamily: "'Lato', sans-serif", letterSpacing: "0.5px",
+        <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(26px, 4vw, 46px)", fontWeight: 900, color: "#fff", lineHeight: 1.15, marginBottom: "12px" }}>
+          Quotes We'll Miss{" "}
+          <span style={{ background: "linear-gradient(90deg, #fbbf24, #f472b6, #818cf8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Hearing</span>
+        </h2>
+        <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "14px", fontFamily: "'Lato', sans-serif", fontStyle: "italic" }}>
+          Things We'll Always Remember You Saying 🌸
+        </p>
+      </div>
+
+      {/* Cards grid */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+        gap: "20px",
+        width: "100%",
+        maxWidth: "960px",
+      }}>
+        {CATCHPHRASES.map((b, i) => (
+          <div key={i} style={{
+            background: b.bg,
+            borderRadius: "20px",
+            padding: "24px 26px",
+            boxShadow: b.shadow,
+            border: `1.5px solid ${b.border}`,
+            animation: `fadeSlideUp 0.6s ${i * 0.1}s both`,
+            position: "relative",
+            overflow: "hidden",
           }}>
-            {bubble.sender}
-          </span>
-        </div>
+            {/* Big quote mark background */}
+            <span style={{
+              position: "absolute", top: "-10px", right: "16px",
+              fontSize: "80px", color: b.senderColor, opacity: 0.08,
+              fontFamily: "Georgia, serif", fontWeight: 900, lineHeight: 1, pointerEvents: "none",
+            }}>"</span>
+            {/* Opening quote */}
+            <span style={{
+              fontSize: "22px", color: b.senderColor, fontFamily: "Georgia, serif",
+              fontWeight: 900, display: "block", marginBottom: "8px", opacity: 0.7,
+            }}>"</span>
+            <p style={{
+              fontSize: "17px", color: b.textColor, fontFamily: "'Playfair Display', serif",
+              lineHeight: 1.6, fontWeight: 700, fontStyle: "italic", margin: "0 0 16px",
+            }}>
+              {b.text}
+            </p>
+            <div style={{ height: "1px", background: b.border, marginBottom: "12px" }} />
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <div style={{ width: "7px", height: "7px", borderRadius: "50%", background: b.senderColor }} />
+              <span style={{ fontSize: "11px", color: b.senderColor, fontWeight: 700, fontFamily: "'Lato', sans-serif", letterSpacing: "0.5px" }}>
+                Sushmitha
+              </span>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
-  );
-}
-
-function ScatteredChat() {
-  const [visibleSet, setVisibleSet] = useState(new Set());
-  useEffect(() => {
-    const timers = SCATTERED_BUBBLES.map((b, i) =>
-      setTimeout(() => setVisibleSet(prev => new Set([...prev, i])), b.delay)
-    );
-    return () => timers.forEach(clearTimeout);
-  }, []);
-  return (
-    <>
-      {SCATTERED_BUBBLES.map((b, i) => (
-        <ScatteredBubble key={i} bubble={b} visible={visibleSet.has(i)} />
-      ))}
-    </>
   );
 }
 
@@ -453,8 +453,6 @@ function HomePage({ onNavigate }) {
         opacity: visible ? 1 : 0, transition: "opacity 0.6s ease", gap: "0px",
       }}>
 
-        {/* Scattered speech bubbles */}
-        <ScatteredChat />
         {/* Avatar — smaller */}
         <div style={{ position: "relative", width: "110px", height: "110px", marginBottom: "20px" }}>
           <div style={{ position: "absolute", inset: "-12px", borderRadius: "50%", border: "2px solid #f472b655", animation: "pulseRing 2s ease-out infinite" }} />
@@ -483,24 +481,45 @@ function HomePage({ onNavigate }) {
           </p>
         </div>
 
-        {/* Nav button */}
-        <div style={{ animation: "fadeSlideUp 0.8s 0.6s both", display: "flex", justifyContent: "center", marginBottom: "20px" }}>
+        {/* Nav buttons */}
+        <div style={{ animation: "fadeSlideUp 0.8s 0.6s both", display: "flex", gap: "14px", flexWrap: "wrap", justifyContent: "center", marginBottom: "20px" }}>
           <button onClick={() => onNavigate("memories")} style={{
-            display: "flex", alignItems: "center", gap: "14px",
-            padding: "14px 32px", borderRadius: "14px",
-            background: "linear-gradient(135deg, #1e3a5f, #3d1a3a)",
-            border: "1.5px solid rgba(129,140,248,0.5)",
-            color: "#fff", fontWeight: 700, fontSize: "14px",
+            display: "flex", alignItems: "center", gap: "12px",
+            padding: "13px 22px", borderRadius: "14px",
+            background: "linear-gradient(135deg, #1e3a5f, #1a2a4a)",
+            border: "1.5px solid rgba(96,165,250,0.4)",
+            color: "#fff", fontWeight: 700, fontSize: "13px",
             cursor: "pointer", fontFamily: "'Lato', sans-serif",
-            boxShadow: "0 8px 24px rgba(129,140,248,0.25)",
+            boxShadow: "0 8px 24px rgba(96,165,250,0.2)",
             transition: "transform 0.25s, box-shadow 0.25s",
+            minWidth: "170px",
           }}
-            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 14px 40px rgba(129,140,248,0.4)"; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(129,140,248,0.25)"; }}>
-            <div style={{ fontSize: "26px" }}>📸</div>
+            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 14px 40px rgba(96,165,250,0.4)"; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(96,165,250,0.2)"; }}>
+            <div style={{ fontSize: "22px" }}>📸</div>
             <div>
-              <div style={{ fontSize: "14px", fontWeight: 700 }}>Memories & Messages</div>
-              <div style={{ fontSize: "11px", color: "#a5b4fc", marginTop: "2px", fontWeight: 400 }}>Photos · Moments · Words from the heart 💌</div>
+              <div style={{ fontSize: "13px", fontWeight: 700 }}>Memories & Messages</div>
+              <div style={{ fontSize: "10px", color: "#60a5fa", marginTop: "2px", fontWeight: 400 }}>Photos · Words from the heart</div>
+            </div>
+          </button>
+
+          <button onClick={() => onNavigate("catchphrases")} style={{
+            display: "flex", alignItems: "center", gap: "12px",
+            padding: "13px 22px", borderRadius: "14px",
+            background: "linear-gradient(135deg, #3d1a3a, #2a1230)",
+            border: "1.5px solid rgba(244,114,182,0.4)",
+            color: "#fff", fontWeight: 700, fontSize: "13px",
+            cursor: "pointer", fontFamily: "'Lato', sans-serif",
+            boxShadow: "0 8px 24px rgba(244,114,182,0.2)",
+            transition: "transform 0.25s, box-shadow 0.25s",
+            minWidth: "170px",
+          }}
+            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 14px 40px rgba(244,114,182,0.4)"; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(244,114,182,0.2)"; }}>
+            <div style={{ fontSize: "22px" }}>💬</div>
+            <div>
+              <div style={{ fontSize: "13px", fontWeight: 700 }}>Her Catchphrases</div>
+              <div style={{ fontSize: "10px", color: "#f472b6", marginTop: "2px", fontWeight: 400 }}>Quotes we'll miss hearing</div>
             </div>
           </button>
         </div>
@@ -589,8 +608,9 @@ export default function FarewellApp() {
       <FloatingParticles />
 
       <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #0d0d1a 0%, #1a0d2e 40%, #0d1a2e 100%)", color: "#fff", fontFamily: "'Lato', sans-serif", position: "relative" }}>
-        {page === "home"      && <HomePage      onNavigate={setPage} />}
-        {page === "memories"  && <MemoriesPage  onBack={() => setPage("home")} />}
+        {page === "home"         && <HomePage         onNavigate={setPage} />}
+        {page === "memories"     && <MemoriesPage     onBack={() => setPage("home")} />}
+        {page === "catchphrases" && <CatchphrasesPage  onBack={() => setPage("home")} />}
       </div>
     </>
   );
